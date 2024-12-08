@@ -1,0 +1,883 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JI Digital - Verificación de Molde</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --color-primary: #cc0000;    /* Rojo corporativo */
+            --color-secondary: #333333;   /* Gris oscuro */
+            --color-tertiary: #666666;    /* Gris medio */
+            --color-background: #f8f8f8;  /* Gris super claro */
+            --color-white: #ffffff;
+            --shadow-sm: 0 1px 2px rgba(0,0,0,0.05);
+            --shadow-md: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Roboto', sans-serif;
+        }
+
+        body {
+            background-color: var(--color-background);
+            line-height: 1.6;
+            color: var(--color-secondary);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .header {
+            background: var(--color-primary);
+            color: var(--color-white);
+            padding: 1.5rem 0;
+            box-shadow: var(--shadow-md);
+            margin-bottom: 2rem;
+        }
+
+        .header h1 {
+            font-size: 2rem;
+            font-weight: 600;
+            text-align: center;
+            margin-bottom: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .header p {
+            text-align: center;
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        .componente-card {
+            background: var(--color-white);
+            border-radius: 10px;
+            margin: 1.5rem 0;
+            box-shadow: var(--shadow-sm);
+            transition: box-shadow 0.3s ease;
+        }
+
+        .componente-card:hover {
+            box-shadow: var(--shadow-md);
+        }
+
+        .componente-header {
+            background: var(--color-secondary);
+            color: var(--color-white);
+            padding: 1.2rem 1.5rem;
+            cursor: pointer;
+            border-radius: 10px 10px 0 0;
+            display: flex;
+            align-items: center;
+            transition: background-color 0.3s ease;
+        }
+
+        .componente-header:hover {
+            background: #404040;
+        }
+
+        .componente-header h2 {
+            margin: 0;
+            font-size: 1.25rem;
+            font-weight: 500;
+        }
+
+        .componente-content {
+            display: none;
+            padding: 2rem;
+        }
+
+        .componente-content.active {
+            display: block;
+            animation: fadeIn 0.3s ease-in-out;
+        }
+
+        .verificacion {
+            background: var(--color-white);
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            margin: 1.5rem 0;
+            padding: 2rem;
+        }
+
+        .verificacion h3 {
+            color: var(--color-primary);
+            font-size: 1.2rem;
+            margin-bottom: 1.5rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid var(--color-primary);
+        }
+
+        .verificacion-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 2rem;
+        }
+
+        @media (min-width: 768px) {
+            .verificacion-grid {
+                grid-template-columns: 1.5fr 1fr;
+            }
+        }
+
+        .texto-info {
+            text-align: justify;
+            margin-bottom: 1.5rem;
+            padding: 1rem;
+            background: var(--color-background);
+            border-radius: 6px;
+            border-left: 4px solid var(--color-primary);
+        }
+
+        h4 {
+            color: var(--color-secondary);
+            margin: 1.5rem 0 1rem 0;
+            font-size: 1.1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0.8rem 1.5rem;
+            border-radius: 6px;
+            border: none;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            width: 100%;
+            margin: 0.5rem 0;
+            font-size: 0.9rem;
+        }
+
+        .btn-primary {
+            background: var(--color-primary);
+            color: var(--color-white);
+        }
+
+        .btn-primary:hover {
+            background: #b00000;
+        }
+
+        .btn-success {
+            background: #2d8a2d;
+            color: var(--color-white);
+        }
+
+        .btn-success:hover {
+            background: #237023;
+        }
+
+        .btn-danger {
+            background: #d32f2f;
+            color: var(--color-white);
+        }
+
+        .btn-danger:hover {
+            background: #b71c1c;
+        }
+
+        .imagen-container {
+            margin: 1rem 0;
+        }
+
+        .imagen-container img {
+            width: 100%;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .imagen-container img:hover {
+            transform: scale(1.02);
+        }
+
+        .imagen-descripcion {
+            margin-top: 0.8rem;
+            text-align: center;
+            font-size: 0.9rem;
+            color: var(--color-tertiary);
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.85);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+            backdrop-filter: blur(5px);
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: var(--color-white);
+            padding: 2rem;
+            border-radius: 12px;
+            max-width: 90%;
+            max-height: 90vh;
+            overflow: auto;
+            position: relative;
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: var(--color-primary);
+            color: var(--color-white);
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 1.2rem;
+            border: none;
+        }
+
+        .verificacion-resultado {
+            background: var(--color-background);
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin-top: 1.5rem;
+            border-left: 4px solid var(--color-primary);
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 24px;
+            height: 24px;
+            margin-right: 0.5rem;
+        }
+
+        /* Mejoras de accesibilidad */
+        :focus {
+            outline: 2px solid var(--color-primary);
+            outline-offset: 2px;
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            * {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+                scroll-behavior: auto !important;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="container">
+            <h1>Verificación de Molde</h1>
+            <p>Registro detallado de inspección y mantenimiento</p>
+        </div>
+    </div>
+
+    <div class="container" id="app"></div>
+
+    <div class="modal" id="imageModal">
+        <div class="modal-content">
+            <button class="modal-close" onclick="cerrarModal()">×</button>
+            <img id="modalImage" src="" alt="">
+            <h4 id="modalTitle" class="modal-title"></h4>
+            <p id="modalDescription"></p>
+        </div>
+    </div>
+
+    <script>
+        // Datos de ejemplo - esto vendría de tu base de datos
+        const datosJI = [
+            {
+                id: 1,
+                componente: "Placa Bakelita",
+                descripcion: "Placa de aislamiento térmico para prevenir transferencia de calor",
+                funcion: `Actúa como barrera térmica entre el molde y la placa de montaje, 
+                         previniendo la transferencia de calor del molde caliente a la máquina. 
+                         Esto es crucial para mantener la estabilidad dimensional y proteger los 
+                         componentes de la máquina.`,
+                verificaciones: [
+                    {
+                        id: "1-1",
+                        punto: "Revisar oxidación o suciedad superficial",
+                        detalle: `La oxidación o suciedad puede comprometer la capacidad aislante de la placa:
+                                • La oxidación puede crear puntos de transferencia térmica no deseada
+                                • La suciedad puede crear espacios donde se acumule humedad
+                                • Los residuos pueden afectar el contacto uniforme entre superficies`,
+                        metodo: `Inspección visual detallada:
+                                1. Examinar toda la superficie bajo buena iluminación
+                                2. Prestar especial atención a las áreas cercanas a los puntos de montaje
+                                3. Verificar ambas caras de la placa
+                                4. Buscar manchas, decoloración o residuos`,
+                        correccion: `Proceso de limpieza:
+                                    1. Limpieza inicial con solvente suave
+                                    2. En caso de oxidación, usar limpiador específico para óxido
+                                    3. Asegurar que la superficie quede completamente seca
+                                    4. Verificar que no queden residuos del limpiador`,
+                        imagenes: [
+                            {
+                                src: "./images/bakelita-general.jpg",
+                                descripcion: "Vista general de la placa de bakelita",
+                                puntosClave: "Observar la superficie completa buscando signos de deterioro"
+                            }
+                        ],
+                        inicio: null,
+                        fin: null,
+                        estado: null,
+                        notas: ""
+                    }
+                ]
+            }
+            // Puedes agregar más componentes aquí
+        ];
+
+        // Estado de la aplicación
+        let estado = {
+            expandedStep: null,
+            activeCheck: null
+        };
+
+        // Funciones auxiliares
+        function formatearTiempo(segundos) {
+            if (segundos < 60) return `${segundos} segundos`;
+            return `${Math.floor(segundos / 60)} minutos ${segundos % 60} segundos`;
+        }
+
+        function calcularDuracion(inicio, fin) {
+            return Math.round((new Date(fin) - new Date(inicio)) / 1000);
+        }
+
+        // Funciones de renderizado
+        function renderizarComponente(componente) {
+            return `
+                <div class="componente-card" data-id="${componente.id}">
+                    <div class="componente-header" onclick="toggleComponente(${componente.id})">
+                        <span class="icon">${estado.expandedStep === componente.id ? '🔽' : '▶️'}</span>
+                        <div>
+                            <h2>${componente.componente}</h2>
+                            <p>${componente.descripcion}</p>
+                        </div>
+                    </div>
+                    <div class="componente-content ${estado.expandedStep === componente.id ? 'active' : ''}">
+                        <div class="texto-info">
+                            <h4>Función del Componente</h4>
+                            <p>${componente.funcion}</p>
+                        </div>
+                        ${renderizarVerificaciones(componente)}
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderizarVerificaciones(componente) {
+            return componente.verificaciones.map(ver => `
+                <div class="verificacion" data-ver-id="${ver.id}">
+                    <h3>${ver.punto}</h3>
+                    <div class="verificacion-grid">
+                        <div>
+                            <div class="texto-info">
+                                <h4>📋 Detalles</h4>
+                                <p>${ver.detalle}</p>
+                            </div>
+                            <div class="texto-info">
+                                <h4>🔍 Método de Inspección</h4>
+                                <p>${ver.metodo}</p>
+                            </div>
+                            <div class="texto-info">
+                                <h4>🔧 Método de Corrección</h4>
+                                <p>${ver.correccion}</p>
+                            </div>
+                        </div>
+                        <div>
+                            ${renderizarImagenes(ver.imagenes)}
+                            ${renderizarBotones(componente.id, ver)}
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function renderizarImagenes(imagenes) {
+            return `
+                <h4>📷 Imágenes de Referencia</h4>
+                ${imagenes.map(img => `
+                    <div class="imagen-container">
+                        <img 
+                            src="${img.src}" 
+                            alt="${img.descripcion}"
+                            onclick="mostrarImagen('${img.src}', '${img.descripcion}', '${img.puntosClave}')"<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JI Digital - Verificación de Molde</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --color-primary: #cc0000;    /* Rojo corporativo */
+            --color-secondary: #333333;   /* Gris oscuro */
+            --color-tertiary: #666666;    /* Gris medio */
+            --color-background: #f8f8f8;  /* Gris super claro */
+            --color-white: #ffffff;
+            --shadow-sm: 0 1px 2px rgba(0,0,0,0.05);
+            --shadow-md: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Roboto', sans-serif;
+        }
+
+        body {
+            background-color: var(--color-background);
+            line-height: 1.6;
+            color: var(--color-secondary);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .header {
+            background: var(--color-primary);
+            color: var(--color-white);
+            padding: 1.5rem 0;
+            box-shadow: var(--shadow-md);
+            margin-bottom: 2rem;
+        }
+
+        .header h1 {
+            font-size: 2rem;
+            font-weight: 600;
+            text-align: center;
+            margin-bottom: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .header p {
+            text-align: center;
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        .componente-card {
+            background: var(--color-white);
+            border-radius: 10px;
+            margin: 1.5rem 0;
+            box-shadow: var(--shadow-sm);
+            transition: box-shadow 0.3s ease;
+        }
+
+        .componente-card:hover {
+            box-shadow: var(--shadow-md);
+        }
+
+        .componente-header {
+            background: var(--color-secondary);
+            color: var(--color-white);
+            padding: 1.2rem 1.5rem;
+            cursor: pointer;
+            border-radius: 10px 10px 0 0;
+            display: flex;
+            align-items: center;
+            transition: background-color 0.3s ease;
+        }
+
+        .componente-header:hover {
+            background: #404040;
+        }
+
+        .componente-header h2 {
+            margin: 0;
+            font-size: 1.25rem;
+            font-weight: 500;
+        }
+
+        .componente-content {
+            display: none;
+            padding: 2rem;
+        }
+
+        .componente-content.active {
+            display: block;
+            animation: fadeIn 0.3s ease-in-out;
+        }
+
+        .verificacion {
+            background: var(--color-white);
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            margin: 1.5rem 0;
+            padding: 2rem;
+        }
+
+        .verificacion h3 {
+            color: var(--color-primary);
+            font-size: 1.2rem;
+            margin-bottom: 1.5rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid var(--color-primary);
+        }
+
+        .verificacion-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 2rem;
+        }
+
+        @media (min-width: 768px) {
+            .verificacion-grid {
+                grid-template-columns: 1.5fr 1fr;
+            }
+        }
+
+        .texto-info {
+            text-align: justify;
+            margin-bottom: 1.5rem;
+            padding: 1rem;
+            background: var(--color-background);
+            border-radius: 6px;
+            border-left: 4px solid var(--color-primary);
+        }
+
+        h4 {
+            color: var(--color-secondary);
+            margin: 1.5rem 0 1rem 0;
+            font-size: 1.1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0.8rem 1.5rem;
+            border-radius: 6px;
+            border: none;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            width: 100%;
+            margin: 0.5rem 0;
+            font-size: 0.9rem;
+        }
+
+        .btn-primary {
+            background: var(--color-primary);
+            color: var(--color-white);
+        }
+
+        .btn-primary:hover {
+            background: #b00000;
+        }
+
+        .btn-success {
+            background: #2d8a2d;
+            color: var(--color-white);
+        }
+
+        .btn-success:hover {
+            background: #237023;
+        }
+
+        .btn-danger {
+            background: #d32f2f;
+            color: var(--color-white);
+        }
+
+        .btn-danger:hover {
+            background: #b71c1c;
+        }
+
+        .imagen-container {
+            margin: 1rem 0;
+        }
+
+        .imagen-container img {
+            width: 100%;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .imagen-container img:hover {
+            transform: scale(1.02);
+        }
+
+        .imagen-descripcion {
+            margin-top: 0.8rem;
+            text-align: center;
+            font-size: 0.9rem;
+            color: var(--color-tertiary);
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.85);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+            backdrop-filter: blur(5px);
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: var(--color-white);
+            padding: 2rem;
+            border-radius: 12px;
+            max-width: 90%;
+            max-height: 90vh;
+            overflow: auto;
+            position: relative;
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: var(--color-primary);
+            color: var(--color-white);
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 1.2rem;
+            border: none;
+        }
+
+        .verificacion-resultado {
+            background: var(--color-background);
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin-top: 1.5rem;
+            border-left: 4px solid var(--color-primary);
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 24px;
+            height: 24px;
+            margin-right: 0.5rem;
+        }
+
+        /* Mejoras de accesibilidad */
+        :focus {
+            outline: 2px solid var(--color-primary);
+            outline-offset: 2px;
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            * {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+                scroll-behavior: auto !important;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="container">
+            <h1>Verificación de Molde</h1>
+            <p>Registro detallado de inspección y mantenimiento</p>
+        </div>
+    </div>
+
+    <div class="container" id="app"></div>
+
+    <div class="modal" id="imageModal">
+        <div class="modal-content">
+            <button class="modal-close" onclick="cerrarModal()">×</button>
+            <img id="modalImage" src="" alt="">
+            <h4 id="modalTitle" class="modal-title"></h4>
+            <p id="modalDescription"></p>
+        </div>
+    </div>
+
+    <script>
+        // Datos de ejemplo - esto vendría de tu base de datos
+        const datosJI = [
+            {
+                id: 1,
+                componente: "Placa Bakelita",
+                descripcion: "Placa de aislamiento térmico para prevenir transferencia de calor",
+                funcion: `Actúa como barrera térmica entre el molde y la placa de montaje, 
+                         previniendo la transferencia de calor del molde caliente a la máquina. 
+                         Esto es crucial para mantener la estabilidad dimensional y proteger los 
+                         componentes de la máquina.`,
+                verificaciones: [
+                    {
+                        id: "1-1",
+                        punto: "Revisar oxidación o suciedad superficial",
+                        detalle: `La oxidación o suciedad puede comprometer la capacidad aislante de la placa:
+                                • La oxidación puede crear puntos de transferencia térmica no deseada
+                                • La suciedad puede crear espacios donde se acumule humedad
+                                • Los residuos pueden afectar el contacto uniforme entre superficies`,
+                        metodo: `Inspección visual detallada:
+                                1. Examinar toda la superficie bajo buena iluminación
+                                2. Prestar especial atención a las áreas cercanas a los puntos de montaje
+                                3. Verificar ambas caras de la placa
+                                4. Buscar manchas, decoloración o residuos`,
+                        correccion: `Proceso de limpieza:
+                                    1. Limpieza inicial con solvente suave
+                                    2. En caso de oxidación, usar limpiador específico para óxido
+                                    3. Asegurar que la superficie quede completamente seca
+                                    4. Verificar que no queden residuos del limpiador`,
+                        imagenes: [
+                            {
+                                src: "./images/bakelita-general.jpg",
+                                descripcion: "Vista general de la placa de bakelita",
+                                puntosClave: "Observar la superficie completa buscando signos de deterioro"
+                            }
+                        ],
+                        inicio: null,
+                        fin: null,
+                        estado: null,
+                        notas: ""
+                    }
+                ]
+            }
+            // Puedes agregar más componentes aquí
+        ];
+
+        // Estado de la aplicación
+        let estado = {
+            expandedStep: null,
+            activeCheck: null
+        };
+
+        // Funciones auxiliares
+        function formatearTiempo(segundos) {
+            if (segundos < 60) return `${segundos} segundos`;
+            return `${Math.floor(segundos / 60)} minutos ${segundos % 60} segundos`;
+        }
+
+        function calcularDuracion(inicio, fin) {
+            return Math.round((new Date(fin) - new Date(inicio)) / 1000);
+        }
+
+        // Funciones de renderizado
+        function renderizarComponente(componente) {
+            return `
+                <div class="componente-card" data-id="${componente.id}">
+                    <div class="componente-header" onclick="toggleComponente(${componente.id})">
+                        <span class="icon">${estado.expandedStep === componente.id ? '🔽' : '▶️'}</span>
+                        <div>
+                            <h2>${componente.componente}</h2>
+                            <p>${componente.descripcion}</p>
+                        </div>
+                    </div>
+                    <div class="componente-content ${estado.expandedStep === componente.id ? 'active' : ''}">
+                        <div class="texto-info">
+                            <h4>Función del Componente</h4>
+                            <p>${componente.funcion}</p>
+                        </div>
+                        ${renderizarVerificaciones(componente)}
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderizarVerificaciones(componente) {
+            return componente.verificaciones.map(ver => `
+                <div class="verificacion" data-ver-id="${ver.id}">
+                    <h3>${ver.punto}</h3>
+                    <div class="verificacion-grid">
+                        <div>
+                            <div class="texto-info">
+                                <h4>📋 Detalles</h4>
+                                <p>${ver.detalle}</p>
+                            </div>
+                            <div class="texto-info">
+                                <h4>🔍 Método de Inspección</h4>
+                                <p>${ver.metodo}</p>
+                            </div>
+                            <div class="texto-info">
+                                <h4>🔧 Método de Corrección</h4>
+                                <p>${ver.correccion}</p>
+                            </div>
+                        </div>
+                        <div>
+                            ${renderizarImagenes(ver.imagenes)}
+                            ${renderizarBotones(componente.id, ver)}
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function renderizarImagenes(imagenes) {
+            return `
+                <h4>📷 Imágenes de Referencia</h4>
+                ${imagenes.map(img => `
+                    <div class="imagen-container">
+                        <img 
+                            src="${img.src}" 
+                            alt="${img.descripcion}"
+                            onclick="mostrarImagen('${img.src}', '${img.descripcion}', '${img.puntosClave}')"
