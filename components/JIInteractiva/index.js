@@ -11,6 +11,12 @@ const JIInteractiva = () => {
   const [activeCheck, setActiveCheck] = useState(null);
   const [selectedImage, setSelectedImage] = useState(null);
 
+  const calcularDuracion = (inicio, fin) => {
+    if (!inicio || !fin) return null;
+    const diff = new Date(fin) - new Date(inicio);
+    return Math.round(diff / 1000);
+  };
+
   const iniciarVerificacion = (componenteId, verificacionId) => {
     setPasos(pasos.map(paso => {
       if (paso.id === componenteId) {
@@ -89,6 +95,7 @@ const JIInteractiva = () => {
               onIniciarVerificacion={iniciarVerificacion}
               onCompletarVerificacion={completarVerificacion}
               onSelectImage={setSelectedImage}
+              calcularDuracion={calcularDuracion}
             />
           )}
         </Card>
