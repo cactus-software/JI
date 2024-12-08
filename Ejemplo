@@ -1,0 +1,304 @@
+import React, { useState } from 'react';
+import { Card, CardHeader, CardContent } from '@/components/ui/card';
+import { Check, Clock, AlertCircle, ChevronDown, ChevronRight, Image, Info } from 'lucide-react';
+
+const JIInteractiva = () => {
+  const [pasos, setPasos] = useState([
+    {
+      id: 1,
+      componente: "Placa Bakelita",
+      descripcion: "Placa de aislamiento térmico para prevenir transferencia de calor",
+      funcion: "Actúa como barrera térmica entre el molde y la placa de montaje, previniendo la transferencia de calor del molde caliente a la máquina. Esto es crucial para mantener la estabilidad dimensional y proteger los componentes de la máquina.",
+      verificaciones: [
+        {
+          id: "1-1",
+          punto: "Revisar oxidación o suciedad superficial",
+          detalle: `La oxidación o suciedad puede comprometer la capacidad aislante de la placa:
+          • La oxidación puede crear puntos de transferencia térmica no deseada
+          • La suciedad puede crear espacios donde se acumule humedad
+          • Los residuos pueden afectar el contacto uniforme entre superficies`,
+          metodo: `Inspección visual detallada:
+          1. Examinar toda la superficie bajo buena iluminación
+          2. Prestar especial atención a las áreas cercanas a los puntos de montaje
+          3. Verificar ambas caras de la placa
+          4. Buscar manchas, decoloración o residuos`,
+          correccion: `Proceso de limpieza:
+          1. Limpieza inicial con solvente suave
+          2. En caso de oxidación, usar limpiador específico para óxido
+          3. Asegurar que la superficie quede completamente seca
+          4. Verificar que no queden residuos del limpiador`,
+          imagenes: [
+            {
+              src: "/api/placeholder/400/300",
+              descripcion: "Vista general de la placa de bakelita",
+              puntosClave: "Observar la superficie completa buscando signos de deterioro"
+            },
+            {
+              src: "/api/placeholder/400/300",
+              descripcion: "Ejemplo de oxidación típica",
+              puntosClave: "Las manchas de óxido suelen aparecer cerca de los bordes"
+            }
+          ],
+          inicio: null,
+          fin: null,
+          estado: null,
+          notas: ""
+        },
+        {
+          id: "1-2",
+          punto: "Revisar golpes, grietas o daños en superficie",
+          detalle: `Los daños físicos pueden comprometer la integridad estructural:
+          • Las grietas pueden propagarse con los ciclos térmicos
+          • Los golpes pueden crear puntos débiles
+          • Cualquier daño puede afectar la capacidad aislante`,
+          metodo: `Inspección visual y táctil:
+          1. Examinar la superficie bajo diferentes ángulos de luz
+          2. Pasar la mano suavemente para detectar irregularidades
+          3. Prestar atención a las esquinas y bordes
+          4. Verificar especialmente alrededor de los agujeros de montaje`,
+          correccion: `Según la severidad del daño:
+          1. Daños superficiales: Pulido suave si es posible
+          2. Grietas o golpes: Reemplazo de la placa
+          3. Al reemplazar, verificar especificaciones exactas
+          4. Asegurar que la nueva placa tenga el mismo espesor`,
+          imagenes: [
+            {
+              src: "/api/placeholder/400/300",
+              descripcion: "Ejemplos de daños comunes",
+              puntosClave: "Identificar tipos de daños y su severidad"
+            }
+          ],
+          inicio: null,
+          fin: null,
+          estado: null,
+          notas: ""
+        }
+      ]
+    }
+  ]);
+
+  const [expandedStep, setExpandedStep] = useState(1);
+  const [activeCheck, setActiveCheck] = useState(null);
+  const [selectedImage, setSelectedImage] = useState(null);
+
+  const iniciarVerificacion = (componenteId, verificacionId) => {
+    setPasos(pasos.map(paso => {
+      if (paso.id === componenteId) {
+        return {
+          ...paso,
+          verificaciones: paso.verificaciones.map(ver => {
+            if (ver.id === verificacionId) {
+              return {
+                ...ver,
+                inicio: new Date().toISOString(),
+                estado: null
+              };
+            }
+            return ver;
+          })
+        };
+      }
+      return paso;
+    }));
+    setActiveCheck(verificacionId);
+  };
+
+  const completarVerificacion = (componenteId, verificacionId, estado, notas = "") => {
+    setPasos(pasos.map(paso => {
+      if (paso.id === componenteId) {
+        return {
+          ...paso,
+          verificaciones: paso.verificaciones.map(ver => {
+            if (ver.id === verificacionId) {
+              return {
+                ...ver,
+                fin: new Date().toISOString(),
+                estado: estado,
+                notas: notas
+              };
+            }
+            return ver;
+          })
+        };
+      }
+      return paso;
+    }));
+    setActiveCheck(null);
+  };
+
+  const calcularDuracion = (inicio, fin) => {
+    if (!inicio || !fin) return null;
+    const diff = new Date(fin) - new Date(inicio);
+    return Math.round(diff / 1000);
+  };
+
+  return (
+    <div className="w-full max-w-6xl mx-auto p-4">
+      <div className="bg-blue-600 text-white p-6 rounded-t-lg">
+        <h1 className="text-2xl font-bold">Verificación de Molde</h1>
+        <p className="mt-2">Registro detallado de inspección y mantenimiento</p>
+      </div>
+
+      {pasos.map(paso => (
+        <Card key={paso.id} className="mt-4">
+          <CardHeader 
+            className="cursor-pointer bg-gray-50"
+            onClick={() => setExpandedStep(expandedStep === paso.id ? null : paso.id)}
+          >
+            <div className="flex items-center">
+              {expandedStep === paso.id ? 
+                <ChevronDown className="w-5 h-5 mr-2" /> : 
+                <ChevronRight className="w-5 h-5 mr-2" />
+              }
+              <div className="flex-1">
+                <h2 className="text-xl font-bold">{paso.componente}</h2>
+                <p className="text-gray-600">{paso.descripcion}</p>
+              </div>
+            </div>
+          </CardHeader>
+
+          {expandedStep === paso.id && (
+            <CardContent className="p-6">
+              <div className="mb-6 bg-blue-50 p-4 rounded-lg">
+                <div className="flex items-start">
+                  <Info className="w-5 h-5 mr-2 mt-1 text-blue-500" />
+                  <div>
+                    <h3 className="font-bold mb-2">Función del Componente</h3>
+                    <p>{paso.funcion}</p>
+                  </div>
+                </div>
+              </div>
+
+              {paso.verificaciones.map(ver => (
+                <div key={ver.id} className="border rounded-lg p-6 mb-6">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                      <h3 className="text-lg font-bold mb-4">{ver.punto}</h3>
+                      
+                      <div className="mb-4">
+                        <h4 className="font-bold text-gray-700 mb-2">
+                          <Info className="w-4 h-4 inline mr-2" />
+                          Detalles de la Verificación
+                        </h4>
+                        <p className="whitespace-pre-line text-sm">{ver.detalle}</p>
+                      </div>
+
+                      <div className="mb-4">
+                        <h4 className="font-bold text-gray-700 mb-2">
+                          <Info className="w-4 h-4 inline mr-2" />
+                          Método de Inspección
+                        </h4>
+                        <p className="whitespace-pre-line text-sm">{ver.metodo}</p>
+                      </div>
+
+                      <div className="mb-4">
+                        <h4 className="font-bold text-gray-700 mb-2">
+                          <Info className="w-4 h-4 inline mr-2" />
+                          Método de Corrección
+                        </h4>
+                        <p className="whitespace-pre-line text-sm">{ver.correccion}</p>
+                      </div>
+                    </div>
+
+                    <div>
+                      <h4 className="font-bold text-gray-700 mb-2">
+                        <Image className="w-4 h-4 inline mr-2" />
+                        Imágenes de Referencia
+                      </h4>
+                      <div className="grid grid-cols-1 gap-4">
+                        {ver.imagenes.map((img, index) => (
+                          <div key={index} className="border rounded-lg p-2">
+                            <img
+                              src={img.src}
+                              alt={img.descripcion}
+                              className="w-full rounded cursor-pointer hover:opacity-90"
+                              onClick={() => setSelectedImage(img)}
+                            />
+                            <p className="text-sm mt-2 font-bold">{img.descripcion}</p>
+                            <p className="text-sm text-gray-600">{img.puntosClave}</p>
+                          </div>
+                        ))}
+                      </div>
+
+                      <div className="mt-4">
+                        {!ver.inicio ? (
+                          <button
+                            className="bg-blue-500 text-white px-6 py-3 rounded-lg w-full"
+                            onClick={() => iniciarVerificacion(paso.id, ver.id)}
+                          >
+                            <Clock className="w-4 h-4 inline mr-2" />
+                            Iniciar Verificación
+                          </button>
+                        ) : !ver.fin ? (
+                          <div className="space-y-2">
+                            <button
+                              className="bg-green-500 text-white px-6 py-3 rounded-lg w-full"
+                              onClick={() => completarVerificacion(paso.id, ver.id, true)}
+                            >
+                              <Check className="w-4 h-4 inline mr-2" />
+                              Completar Verificación
+                            </button>
+                            <button
+                              className="bg-red-500 text-white px-6 py-3 rounded-lg w-full"
+                              onClick={() => {
+                                const notas = prompt("Indica el motivo por el que no se pudo completar:");
+                                if (notas) completarVerificacion(paso.id, ver.id, false, notas);
+                              }}
+                            >
+                              <AlertCircle className="w-4 h-4 inline mr-2" />
+                              No se Pudo Completar
+                            </button>
+                          </div>
+                        ) : (
+                          <div className="bg-gray-50 p-4 rounded-lg">
+                            <h4 className="font-bold mb-2">Resultado de la Verificación</h4>
+                            <p className="flex items-center">
+                              <Clock className="w-4 h-4 inline mr-2" />
+                              Duración: {calcularDuracion(ver.inicio, ver.fin)} segundos
+                            </p>
+                            <p className="flex items-center">
+                              {ver.estado ? 
+                                <Check className="w-4 h-4 inline mr-2 text-green-500" /> : 
+                                <AlertCircle className="w-4 h-4 inline mr-2 text-red-500" />
+                              }
+                              Estado: {ver.estado ? "Completado" : "No Completado"}
+                            </p>
+                            {ver.notas && (
+                              <p className="flex items-center">
+                                <Info className="w-4 h-4 inline mr-2" />
+                                Notas: {ver.notas}
+                              </p>
+                            )}
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </CardContent>
+          )}
+        </Card>
+      ))}
+
+      {selectedImage && (
+        <div 
+          className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50"
+          onClick={() => setSelectedImage(null)}
+        >
+          <div className="bg-white p-4 rounded-lg max-w-3xl w-full">
+            <img
+              src={selectedImage.src}
+              alt={selectedImage.descripcion}
+              className="w-full rounded"
+            />
+            <h4 className="font-bold mt-4">{selectedImage.descripcion}</h4>
+            <p className="text-gray-600">{selectedImage.puntosClave}</p>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+};
+
+export default JIInteractiva;
