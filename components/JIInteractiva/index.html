@@ -333,26 +333,7 @@
                 ]
             }
         ];
-                const contenedor = document.getElementById("contenedor");
-
-        datosJI.forEach(item => {
-            const verificacionesHTML = item.verificaciones.map(verificacion => `
-                <div class="text-pre-wrap">
-                    <strong>${verificacion.punto}</strong><br>
-                    <strong>Detalle:</strong><br>${verificacion.detalle}<br>
-                    <strong>Método:</strong><br>${verificacion.metodo}<br>
-                    <strong>Corrección:</strong><br>${verificacion.correccion}<br>
-                </div>
-            `).join("");
-
-            contenedor.innerHTML += `
-                <div class="text-pre-wrap">
-                    <h2>${item.componente}</h2>
-                    <p>${item.descripcion}</p>
-                    ${verificacionesHTML}
-                </div>
-            `;
-        });
+                
 
         // Estado de la aplicación
         let estado = {
