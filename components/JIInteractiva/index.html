@@ -5,8 +5,128 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>JI Digital - Verificación de Molde</title>
     <style>
-        /* Previous CSS remains the same */
-        /* Adding camera-related styles */
+        /* Variables y reset */
+        :root {
+            --color-primary: #cc0000;
+            --color-dark: #333333;
+            --color-gray: #666666;
+            --color-light: #f8f8f8;
+            --color-white: #ffffff;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Arial, sans-serif;
+        }
+
+        body {
+            background-color: var(--color-light);
+            color: var(--color-dark);
+            line-height: 1.6;
+        }
+
+        /* Container */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 1.5rem;
+        }
+
+        /* Header */
+        .header {
+            background: var(--color-primary);
+            padding: 3rem 0;
+            text-align: center;
+        }
+
+        .header h1 {
+            color: var(--color-white);
+            font-size: 2.5rem;
+            font-weight: normal;
+            margin-bottom: 1rem;
+        }
+
+        .header p {
+            color: var(--color-white);
+            font-size: 1.2rem;
+        }
+
+        /* Componentes y verificaciones */
+        .componente-card {
+            background: var(--color-white);
+            border-radius: 8px;
+            margin: 1rem 0;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .componente-header {
+            background: var(--color-dark);
+            padding: 1.2rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            color: var(--color-white);
+        }
+
+        .componente-header:hover {
+            background: #404040;
+        }
+
+        .componente-header h2 {
+            margin: 0;
+            font-size: 1.2rem;
+        }
+
+        .componente-content {
+            display: none;
+            padding: 1.5rem;
+        }
+
+        .componente-content.active {
+            display: block;
+        }
+
+        .verificacion {
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            margin: 1rem 0;
+            padding: 1.5rem;
+            background: var(--color-white);
+        }
+
+        .verificacion h3 {
+            color: var(--color-primary);
+            font-size: 1.2rem;
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid var(--color-primary);
+        }
+
+        .verificacion-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 2rem;
+        }
+
+        @media (min-width: 768px) {
+            .verificacion-grid {
+                grid-template-columns: 1.5fr 1fr;
+            }
+        }
+
+        .texto-info {
+            background: var(--color-light);
+            padding: 1rem;
+            border-radius: 6px;
+            margin-bottom: 1rem;
+            border-left: 4px solid var(--color-primary);
+            text-align: justify;
+        }
+
+        /* Camera styles */
         .camera-container {
             width: 100%;
             max-width: 640px;
@@ -53,13 +173,141 @@
             margin-bottom: 1rem;
         }
 
-        /* Previous CSS continues... */
+        /* Botones */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            padding: 0.8rem 1.5rem;
+            border-radius: 6px;
+            border: none;
+            cursor: pointer;
+            font-weight: 500;
+            width: 100%;
+            justify-content: center;
+            margin: 0.5rem 0;
+            text-transform: uppercase;
+            font-size: 0.9rem;
+            letter-spacing: 0.5px;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary {
+            background: var(--color-primary);
+            color: var(--color-white);
+        }
+
+        .btn-primary:hover {
+            background: #b00000;
+        }
+
+        .btn-success {
+            background: #2d8a2d;
+            color: var(--color-white);
+        }
+
+        .btn-success:hover {
+            background: #237023;
+        }
+
+        .btn-danger {
+            background: #d32f2f;
+            color: var(--color-white);
+        }
+
+        .btn-danger:hover {
+            background: #b71c1c;
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.85);
+            z-index: 100;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: var(--color-white);
+            padding: 2rem;
+            border-radius: 12px;
+            max-width: 90%;
+            max-height: 90vh;
+            overflow: auto;
+            position: relative;
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: var(--color-primary);
+            color: var(--color-white);
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            border: none;
+        }
+
+        /* Imagen container */
+        .imagen-container {
+            margin: 1rem 0;
+        }
+
+        .imagen-container img {
+            width: 100%;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .imagen-container img:hover {
+            transform: scale(1.02);
+        }
+
+        /* Resultados */
+        .verificacion-resultado {
+            background: var(--color-light);
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin-top: 1rem;
+            border-left: 4px solid var(--color-primary);
+        }
     </style>
 </head>
 <body>
-    <!-- Previous HTML structure remains -->
-    
-    <!-- Add camera modal -->
+    <div class="header">
+        <div class="container">
+            <h1>Verificación de Molde</h1>
+            <p>Registro detallado de inspección y mantenimiento</p>
+        </div>
+    </div>
+
+    <div class="container" id="app">
+        <!-- Los componentes se generarán dinámicamente aquí -->
+    </div>
+
+    <div class="modal" id="imageModal">
+        <div class="modal-content">
+            <button class="modal-close" onclick="cerrarModal()">×</button>
+            <img id="modalImage" src="" alt="">
+            <h4 id="modalTitle" class="modal-title"></h4>
+            <p id="modalDescription"></p>
+        </div>
+    </div>
+
     <div class="modal" id="cameraModal">
         <div class="modal-content">
             <button class="modal-close" onclick="cerrarCamara()">×</button>
@@ -75,224 +323,343 @@
     </div>
 
     <script>
-        // Previous JavaScript code remains
-        // Add camera-related functions
+        // Datos iniciales
+        const datosJI = [
+            {
+                id: 1,
+                componente: "Baquelita",
+                descripcion: "Lámina de Aislamiento Térmico",
+                verificaciones: [
+                    {
+                        id: "1-1",
+                        punto: "Revisión de Apariencia",
+                        inspecciones: [
+                            {
+                                detalle: "Verificar oxidación o suciedad en la superficie",
+                                metodo: "Inspección visual",
+                                correccion: "Limpieza"
+                            },
+                            {
+                                detalle: "Verificar abolladuras, grietas y daños en la superficie",
+                                metodo: "Inspección visual", 
+                                correccion: "Reemplazo de pieza"
+                            },
+                            {
+                                detalle: "Verificar juego/soltura de la placa",
+                                metodo: "Verificación de ajuste",
+                                correccion: "Ajuste de tornillos, Reemplazo de tornillos"
+                            }
+                        ],
+                        imagenes: [{
+                            src: "./images/bakelite.jpg",
+                            descripcion: "Vista general de la placa bakelita",
+                            puntosClave: "Revisar toda la superficie buscando daños"
+                        }],
+                        inicio: null,
+                        fin: null,
+                        estado: null,
+                        notas: ""
+                    }
+                ]
+            },
+            {
+                id: 2,
+                componente: "Placa de Instalación Fija",
+                descripcion: "Placa de Instalación Fija",
+                verificaciones: [
+                    {
+                        id: "2-1",
+                        punto: "Revisión de Superficie",
+                        inspecciones: [
+                            {
+                                detalle: "Verificar oxidación o suciedad en la superficie",
+                                metodo: "Inspección visual",
+                                correccion: "Pulido, limpieza"
+                            },
+                            {
+                                detalle: "Verificar abolladuras, daños y grietas en la superficie",
+                                metodo: "Inspección visual",
+                                correccion: "Pulido, Reemplazo de pieza"
+                            }
+                        ],
+                        imagenes: [{
+                            src: "./images/fixed-plate.jpg",
+                            descripcion: "Placa de instalación",
+                            puntosClave: "Inspeccionar superficie y bordes"
+                        }],
+                        inicio: null,
+                        fin: null,
+                        estado: null,
+                        notas: ""
+                    }
+                ]
+            }
+        ];
+
+        // Variables globales
+        let estado = {
+            expandedStep: null,
+            activeCheck: null
+        };
+
         let stream = null;
         let capturedImages = {};
 
-        function iniciarCamara(componenteId, verificacionId) {
-            const modal = document.getElementById('cameraModal');
-            const video = document.getElementById('video');
-            
-            navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } })
-                .then(videoStream => {
-                    stream = videoStream;
-                    video.srcObject = stream;
-                    modal.classList.add('active');
-                    // Store current context for later use
-                    window.currentComponenteId = componenteId;
-                    window.currentVerificacionId = verificacionId;
-                })
-                .catch(error => {
-                    console.error('Error accessing camera:', error);
-                    alert('Error al acceder a la cámara. Verifica los permisos.');
-                });
+        // Funciones de renderizado
+        function renderizarComponente(componente) {
+            return `
+                <div class="componente-card" data-id="${componente.id}">
+                    <div class="componente-header" onclick="toggleComponente(${componente.id})">
+                        <span class="icon">${estado.expandedStep === componente.id ? '🔽' : '▶️'}</span>
+                        <div>
+                            <h2>${componente.componente}</h2>
+                            <p>${componente.descripcion}</p>
+                        </div>
+                    </div>
+                    <div class="componente-content ${estado.expandedStep === componente.id ? 'active' : ''}">
+                        ${renderizarVerificaciones(componente)}
+                    </div>
+                </div>
+            `;
         }
 
-        function cerrarCamara() {
-            const modal = document.getElementById('cameraModal');
-            const video = document.getElementById('video');
-            
-            if (stream) {
-                stream.getTracks().forEach(track => track.stop());
-                stream = null;
-            }
-            
-            video.srcObject = null;
-            modal.classList.remove('active');
+        function renderizarVerificaciones(componente) {
+            return componente.verificaciones.map(ver => `
+                <div class="verificacion" data-ver-id="${ver.id}">
+                    <h3>${ver.punto}</h3>
+                    <div class="verificacion-grid">
+                        <div>
+                            ${renderizarInspecciones(ver.inspecciones)}
+                        </div>
+                        <div>
+                            ${renderizarImagenes(ver.imagenes)}
+                            ${renderizarBotones(componente.id, ver)}
+                        </div>
+                    </div>
+                </div>
+            `).join('');
         }
 
-        function tomarFoto() {
-            const video = document.getElementById('video');
-            const canvas = document.getElementById('canvas');
-            const context = canvas.getContext('2d');
-
-            // Set canvas size to match video dimensions
-            canvas.width = video.videoWidth;
-            canvas.height = video.videoHeight;
-
-            // Draw video frame to canvas
-            context.drawImage(video, 0, 0);
-
-            // Convert to base64
-            const imageData = canvas.toDataURL('image/jpeg');
-
-            // Get current verification context
-            const componenteId = window.currentComponenteId;
-            const verificacionId = window.currentVerificacionId;
-
-            // Initialize array for this verification if doesn't exist
-            if (!capturedImages[verificacionId]) {
-                capturedImages[verificacionId] = [];
-            }
-
-            // Add timestamp and image data
-            capturedImages[verificacionId].push({
-                timestamp: new Date().toISOString(),
-                imageData: imageData
-            });
-
-            // Close camera
-            cerrarCamara();
-            
-            // Update UI
-            renderizarApp();
+        function renderizarInspecciones(inspecciones) {
+            return inspecciones.map((insp, index) => `
+                <div class="texto-info">
+                    <h4>📋 Punto ${index + 1}</h4>
+                    <p><strong>Detalle:</strong> ${insp.detalle}</p>
+                    <p><strong>Método:</strong> ${insp.metodo}</p>
+                    <p><strong>Corrección:</strong> ${insp.correccion}</p>
+                </div>
+            `).join('');
         }
 
-        // Modify renderizarBotones to include camera button and captured images
-        function renderizarBotones(componenteId, verificacion) {
-            let html = '';
-            
-            if (!verificacion.inicio) {
-                html += `
-                    <button class="btn btn-primary" onclick="iniciarVerificacion(${componenteId}, '${verificacion.id}')">
-                        ⏱️ Iniciar Verificación
-                    </button>`;
-            } else if (!verificacion.fin) {
-                html += `
-                    <button class="btn btn-primary" onclick="iniciarCamara(${componenteId}, '${verificacion.id}')">
-                        📸 Tomar Foto
-                    </button>
-                    <button class="btn btn-success" onclick="completarVerificacion(${componenteId}, '${verificacion.id}', true)">
-                        ✅ Completar Verificación
-                    </button>
-                    <button class="btn btn-danger" onclick="noCompletarVerificacion(${componenteId}, '${verificacion.id}')">
-                        ❌ No se Pudo Completar
-                    </button>`;
-            }
-
-            // Add captured images section if any exist
-            if (capturedImages[verificacion.id] && capturedImages[verificacion.id].length > 0) {
-                html += `
-                    <div id="capturadas">
-                        <h4>📸 Fotos Capturadas</h4>
-                        ${capturedImages[verificacion.id].map((img, index) => `
-                            <div class="foto-item">
-                                <div class="imagen-header">
-                                    <span>Foto ${index + 1}</span>
-                                    <button class="btn btn-danger" onclick="eliminarFoto('${verificacion.id}', ${index})">
-                                        🗑️ Eliminar
-                                    </button>
-                                </div>
-                                <img src="${img.imageData}" class="captured-image" alt="Foto capturada ${index + 1}">
-                                <p>Tomada: ${new Date(img.timestamp).toLocaleString()}</p>
-                            </div>
-                        `).join('')}
-                    </div>`;
-            }
-
-            if (verificacion.fin) {
-                html += `
-                    <div class="verificacion-resultado">
-                        <h4>Resultado de la Verificación</h4>
-                        <p>⏱️ Duración: ${formatearTiempo(calcularDuracion(verificacion.inicio, verificacion.fin))}</p>
-                        <p>${verificacion.estado ? '✅ Completado' : '❌ No Completado'}</p>
-                        ${verificacion.notas ? `<p>📝 Notas: ${verificacion.notas}</p>` : ''}
-                    </div>`;
-            }
-
-            return html;
+        function renderizarImagenes(imagenes) {
+            return `
+                <h4>📷 Imágenes de Referencia</h4>
+                <div class="imagen-container">
+                    ${imagenes.map(img => `
+                        <img 
+                            src="${img.src}" 
+                            alt="${img.descripcion}"
+                            onclick="mostrarImagen('${img.src}', '${img.descripcion}', '${img.puntosClave}')"
+                        >
+                        <p class="mt-2"><strong>${img.descripcion}</strong></p>
+                        <p>${img.puntosClave}</p>
+                    `).join('')}
+                </div>
+            `;
         }
 
-        function eliminarFoto(verificacionId, index) {
-            if (confirm('¿Estás seguro de que deseas eliminar esta foto?')) {
-                capturedImages[verificacionId].splice(index, 1);
-                renderizarApp();
-            }
-        }
+       function renderizarBotones(componenteId, verificacion) {
+   let html = '';
+   
+   if (!verificacion.inicio) {
+       html += `
+           <button class="btn btn-primary" onclick="iniciarVerificacion(${componenteId}, '${verificacion.id}')">
+               ⏱️ Iniciar Verificación
+           </button>`;
+   } else if (!verificacion.fin) {
+       html += `
+           <button class="btn btn-primary" onclick="iniciarCamara(${componenteId}, '${verificacion.id}')">
+               📸 Tomar Foto
+           </button>
+           <button class="btn btn-success" onclick="completarVerificacion(${componenteId}, '${verificacion.id}', true)">
+               ✅ Completar Verificación
+           </button>
+           <button class="btn btn-danger" onclick="noCompletarVerificacion(${componenteId}, '${verificacion.id}')">
+               ❌ No se Pudo Completar
+           </button>`;
+   }
 
-        // Previous JavaScript code continues...
-   // Estado de la aplicación
-let estado = {
-    expandedStep: null,
-    activeCheck: null
-};
+   // Add captured images section if any exist
+   if (capturedImages[verificacion.id] && capturedImages[verificacion.id].length > 0) {
+       html += `
+           <div id="capturadas">
+               <h4>📸 Fotos Capturadas</h4>
+               ${capturedImages[verificacion.id].map((img, index) => `
+                   <div class="foto-item">
+                       <div class="imagen-header">
+                           <span>Foto ${index + 1}</span>
+                           <button class="btn btn-danger" onclick="eliminarFoto('${verificacion.id}', ${index})">
+                               🗑️ Eliminar
+                           </button>
+                       </div>
+                       <img src="${img.imageData}" class="captured-image" alt="Foto capturada ${index + 1}">
+                       <p>Tomada: ${new Date(img.timestamp).toLocaleString()}</p>
+                   </div>
+               `).join('')}
+           </div>`;
+   }
+
+   if (verificacion.fin) {
+       html += `
+           <div class="verificacion-resultado">
+               <h4>Resultado de la Verificación</h4>
+               <p>⏱️ Duración: ${formatearTiempo(calcularDuracion(verificacion.inicio, verificacion.fin))}</p>
+               <p>${verificacion.estado ? '✅ Completado' : '❌ No Completado'}</p>
+               ${verificacion.notas ? `<p>📝 Notas: ${verificacion.notas}</p>` : ''}
+           </div>`;
+   }
+
+   return html;
+}
 
 // Funciones auxiliares
 function formatearTiempo(segundos) {
-    if (segundos < 60) return `${segundos} segundos`;
-    return `${Math.floor(segundos / 60)} minutos ${segundos % 60} segundos`;
+   if (segundos < 60) return `${segundos} segundos`;
+   return `${Math.floor(segundos / 60)} minutos ${segundos % 60} segundos`;
 }
 
 function calcularDuracion(inicio, fin) {
-    if (!inicio || !fin) return null;
-    return Math.round((new Date(fin) - new Date(inicio)) / 1000);
+   if (!inicio || !fin) return null;
+   return Math.round((new Date(fin) - new Date(inicio)) / 1000);
 }
 
 // Funciones de eventos
 function toggleComponente(id) {
-    estado.expandedStep = estado.expandedStep === id ? null : id;
-    renderizarApp();
+   estado.expandedStep = estado.expandedStep === id ? null : id;
+   renderizarApp();
 }
 
 function iniciarVerificacion(componenteId, verificacionId) {
-    const componente = datosJI.find(c => c.id === componenteId);
-    const verificacion = componente.verificaciones.find(v => v.id === verificacionId);
-    verificacion.inicio = new Date().toISOString();
-    estado.activeCheck = verificacionId;
-    renderizarApp();
+   const componente = datosJI.find(c => c.id === componenteId);
+   const verificacion = componente.verificaciones.find(v => v.id === verificacionId);
+   verificacion.inicio = new Date().toISOString();
+   estado.activeCheck = verificacionId;
+   renderizarApp();
 }
 
 function completarVerificacion(componenteId, verificacionId, estado) {
-    const componente = datosJI.find(c => c.id === componenteId);
-    const verificacion = componente.verificaciones.find(v => v.id === verificacionId);
-    verificacion.fin = new Date().toISOString();
-    verificacion.estado = estado;
-    renderizarApp();
+   const componente = datosJI.find(c => c.id === componenteId);
+   const verificacion = componente.verificaciones.find(v => v.id === verificacionId);
+   verificacion.fin = new Date().toISOString();
+   verificacion.estado = estado;
+   renderizarApp();
 }
 
 function noCompletarVerificacion(componenteId, verificacionId) {
-    const notas = prompt("Indica el motivo por el que no se pudo completar:");
-    if (notas) {
-        const componente = datosJI.find(c => c.id === componenteId);
-        const verificacion = componente.verificaciones.find(v => v.id === verificacionId);
-        verificacion.fin = new Date().toISOString();
-        verificacion.estado = false;
-        verificacion.notas = notas;
-        renderizarApp();
-    }
+   const notas = prompt("Indica el motivo por el que no se pudo completar:");
+   if (notas) {
+       const componente = datosJI.find(c => c.id === componenteId);
+       const verificacion = componente.verificaciones.find(v => v.id === verificacionId);
+       verificacion.fin = new Date().toISOString();
+       verificacion.estado = false;
+       verificacion.notas = notas;
+       renderizarApp();
+   }
+}
+
+function iniciarCamara(componenteId, verificacionId) {
+   const modal = document.getElementById('cameraModal');
+   const video = document.getElementById('video');
+   
+   navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } })
+       .then(videoStream => {
+           stream = videoStream;
+           video.srcObject = stream;
+           modal.classList.add('active');
+           window.currentComponenteId = componenteId;
+           window.currentVerificacionId = verificacionId;
+       })
+       .catch(error => {
+           console.error('Error accessing camera:', error);
+           alert('Error al acceder a la cámara. Verifica los permisos.');
+       });
+}
+
+function cerrarCamara() {
+   const modal = document.getElementById('cameraModal');
+   const video = document.getElementById('video');
+   
+   if (stream) {
+       stream.getTracks().forEach(track => track.stop());
+       stream = null;
+   }
+   
+   video.srcObject = null;
+   modal.classList.remove('active');
+}
+
+function tomarFoto() {
+   const video = document.getElementById('video');
+   const canvas = document.getElementById('canvas');
+   const context = canvas.getContext('2d');
+
+   canvas.width = video.videoWidth;
+   canvas.height = video.videoHeight;
+   context.drawImage(video, 0, 0);
+
+   const imageData = canvas.toDataURL('image/jpeg');
+   const componenteId = window.currentComponenteId;
+   const verificacionId = window.currentVerificacionId;
+
+   if (!capturedImages[verificacionId]) {
+       capturedImages[verificacionId] = [];
+   }
+
+   capturedImages[verificacionId].push({
+       timestamp: new Date().toISOString(),
+       imageData: imageData
+   });
+
+   cerrarCamara();
+   renderizarApp();
+}
+
+function eliminarFoto(verificacionId, index) {
+   if (confirm('¿Estás seguro de que deseas eliminar esta foto?')) {
+       capturedImages[verificacionId].splice(index, 1);
+       renderizarApp();
+   }
 }
 
 function mostrarImagen(src, titulo, descripcion) {
-    const modal = document.getElementById('imageModal');
-    const imagen = document.getElementById('modalImage');
-    const tituloEl = document.getElementById('modalTitle');
-    const descEl = document.getElementById('modalDescription');
+   const modal = document.getElementById('imageModal');
+   const imagen = document.getElementById('modalImage');
+   const tituloEl = document.getElementById('modalTitle');
+   const descEl = document.getElementById('modalDescription');
 
-    imagen.src = src;
-    tituloEl.textContent = titulo;
-    descEl.textContent = descripcion;
-    modal.classList.add('active');
+   imagen.src = src;
+   tituloEl.textContent = titulo;
+   descEl.textContent = descripcion;
+   modal.classList.add('active');
 }
 
 function cerrarModal() {
-    document.getElementById('imageModal').classList.remove('active');
+   document.getElementById('imageModal').classList.remove('active');
 }
 
-// Cerrar modal al hacer clic fuera
+// Event Listeners
 document.getElementById('imageModal').addEventListener('click', function(e) {
-    if (e.target === this) {
-        this.classList.remove('active');
-    }
+   if (e.target === this) {
+       this.classList.remove('active');
+   }
 });
 
-// Renderizar aplicación inicial
+// Iniciar la aplicación
 function renderizarApp() {
-    const app = document.getElementById('app');
-    app.innerHTML = datosJI.map(renderizarComponente).join('');
+   const app = document.getElementById('app');
+   app.innerHTML = datosJI.map(renderizarComponente).join('');
 }
 
-// Iniciar la aplicación
 renderizarApp();
 </script>
 </body>
