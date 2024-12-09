@@ -283,30 +283,36 @@
                 componente: "BAKELITE BOARD",
                 descripcion: "Lámina de Aislamiento Térmico",
                 verificaciones: [
-                    {
-                        id: "1-1",
-                        punto: "Revisión de Apariencia",
-                        detalle: `• Verificar oxidación o suciedad en la superficie<br>
-                                • Verificar abolladuras, grietas y daños en la superficie<br>
-                                • Verificar juego/soltura de la placa`,
-                        metodo: `• Inspección visual<br>
-                                • Inspección visual<br>
-                                • Verificación de ajuste`,
-                        correccion: `• Limpieza<br>
-                                   • Reemplazo de pieza<br>
-                                   • Ajuste de tornillos, Reemplazo de tornillos`,
-                        imagenes: [{
-                            src: "./images/bakelite.jpg",
-                            descripcion: "Vista general de la placa bakelita",
-                            puntosClave: "Revisar toda la superficie buscando daños"
-                        }],
-                        inicio: null,
-                        fin: null,
-                        estado: null,
-                        notas: ""
-                    }
-                ]
+    {
+        id: "1-1",
+        punto: "Revisión de Apariencia",
+        inspecciones: [
+            {
+                detalle: "Verificar oxidación o suciedad en la superficie",
+                metodo: "Inspección visual",
+                correccion: "Limpieza"
             },
+            {
+                detalle: "Verificar abolladuras, grietas y daños en la superficie",
+                metodo: "Inspección visual", 
+                correccion: "Reemplazo de pieza"
+            },
+            {
+                detalle: "Verificar juego/soltura de la placa",
+                metodo: "Verificación de ajuste",
+                correccion: "Ajuste de tornillos, Reemplazo de tornillos"
+            }
+        ],
+        imagenes: [{
+            src: "./images/bakelite.jpg",
+            descripcion: "Vista general de la placa bakelita",
+            puntosClave: "Revisar toda la superficie buscando daños"
+        }],
+        inicio: null,
+        fin: null,
+        estado: null,
+        notas: ""
+    },
             {
                 id: 2,
                 componente: "FIXED INSTALLATION PLATE",
