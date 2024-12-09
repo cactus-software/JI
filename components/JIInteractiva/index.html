@@ -7,10 +7,10 @@
     <style>
         /* Variables y reset */
         :root {
-            --color-primary: #cc0000;    /* Rojo corporativo */
-            --color-dark: #333333;       /* Negro/gris oscuro */
-            --color-gray: #666666;       /* Gris medio */
-            --color-light: #f8f8f8;      /* Gris súper claro */
+            --color-primary: #cc0000;
+            --color-dark: #333333;
+            --color-gray: #666666;
+            --color-light: #f8f8f8;
             --color-white: #ffffff;
         }
 
@@ -245,14 +245,6 @@
             border-left: 4px solid var(--color-primary);
         }
     </style>
-    <style>
-        .text-pre-wrap {
-            white-space: pre-wrap;
-            word-wrap: break-word; /* Evita desbordes de texto */
-            font-family: Arial, sans-serif; /* Opcional: mejora la legibilidad */
-            margin-bottom: 20px; /* Opcional: separación entre secciones */
-        }
-    </style>
 </head>
 <body>
     <div class="header">
@@ -283,36 +275,38 @@
                 componente: "BAKELITE BOARD",
                 descripcion: "Lámina de Aislamiento Térmico",
                 verificaciones: [
-    {
-        id: "1-1",
-        punto: "Revisión de Apariencia",
-        inspecciones: [
-            {
-                detalle: "Verificar oxidación o suciedad en la superficie",
-                metodo: "Inspección visual",
-                correccion: "Limpieza"
+                    {
+                        id: "1-1",
+                        punto: "Revisión de Apariencia",
+                        inspecciones: [
+                            {
+                                detalle: "Verificar oxidación o suciedad en la superficie",
+                                metodo: "Inspección visual",
+                                correccion: "Limpieza"
+                            },
+                            {
+                                detalle: "Verificar abolladuras, grietas y daños en la superficie",
+                                metodo: "Inspección visual", 
+                                correccion: "Reemplazo de pieza"
+                            },
+                            {
+                                detalle: "Verificar juego/soltura de la placa",
+                                metodo: "Verificación de ajuste",
+                                correccion: "Ajuste de tornillos, Reemplazo de tornillos"
+                            }
+                        ],
+                        imagenes: [{
+                            src: "./images/bakelite.jpg",
+                            descripcion: "Vista general de la placa bakelita",
+                            puntosClave: "Revisar toda la superficie buscando daños"
+                        }],
+                        inicio: null,
+                        fin: null,
+                        estado: null,
+                        notas: ""
+                    }
+                ]
             },
-            {
-                detalle: "Verificar abolladuras, grietas y daños en la superficie",
-                metodo: "Inspección visual", 
-                correccion: "Reemplazo de pieza"
-            },
-            {
-                detalle: "Verificar juego/soltura de la placa",
-                metodo: "Verificación de ajuste",
-                correccion: "Ajuste de tornillos, Reemplazo de tornillos"
-            }
-        ],
-        imagenes: [{
-            src: "./images/bakelite.jpg",
-            descripcion: "Vista general de la placa bakelita",
-            puntosClave: "Revisar toda la superficie buscando daños"
-        }],
-        inicio: null,
-        fin: null,
-        estado: null,
-        notas: ""
-    },
             {
                 id: 2,
                 componente: "FIXED INSTALLATION PLATE",
@@ -321,11 +315,18 @@
                     {
                         id: "2-1",
                         punto: "Revisión de Superficie",
-                        detalle: `• Verificar oxidación o suciedad en la superficie<br>
-                                • Verificar abolladuras, daños y grietas en la superficie`,
-                        metodo: "Inspección visual",
-                        correccion: `• Pulido, limpieza<br>
-                                   • Pulido, Reemplazo de pieza`,
+                        inspecciones: [
+                            {
+                                detalle: "Verificar oxidación o suciedad en la superficie",
+                                metodo: "Inspección visual",
+                                correccion: "Pulido, limpieza"
+                            },
+                            {
+                                detalle: "Verificar abolladuras, daños y grietas en la superficie",
+                                metodo: "Inspección visual",
+                                correccion: "Pulido, Reemplazo de pieza"
+                            }
+                        ],
                         imagenes: [{
                             src: "./images/fixed-plate.jpg",
                             descripcion: "Placa de instalación",
@@ -339,7 +340,6 @@
                 ]
             }
         ];
-                
 
         // Estado de la aplicación
         let estado = {
@@ -382,24 +382,24 @@
                     <h3>${ver.punto}</h3>
                     <div class="verificacion-grid">
                         <div>
-                            <div class="texto-info">
-                                <h4>📋 Detalles</h4>
-                                <p>${ver.detalle}</p>
-                            </div>
-                            <div class="texto-info">
-                                <h4>🔍 Método de Inspección</h4>
-                                <p>${ver.metodo}</p>
-                            </div>
-                            <div class="texto-info">
-                                <h4>🔧 Método de Corrección</h4>
-                                <p>${ver.correccion}</p>
-                            </div>
+                            ${renderizarInspecciones(ver.inspecciones)}
                         </div>
                         <div>
                             ${renderizarImagenes(ver.imagenes)}
                             ${renderizarBotones(componente.id, ver)}
                         </div>
                     </div>
+                </div>
+            `).join('');
+        }
+
+        function renderizarInspecciones(inspecciones) {
+            return inspecciones.map((insp, index) => `
+                <div class="texto-info">
+                    <h4>📋 Punto ${index + 1}</h4>
+                    <p><strong>Detalle:</strong> ${insp.detalle}</p>
+                    <p><strong>Método:</strong> ${insp.metodo}</p>
+                    <p><strong>Corrección:</strong> ${insp.correccion}</p>
                 </div>
             `).join('');
         }
@@ -462,72 +462,72 @@
             `;
         }
 
+
         // Funciones de eventos
-        function toggleComponente(id) {
-            estado.expandedStep = estado.expandedStep === id ? null : id;
-            renderizarApp();
-        }
+function toggleComponente(id) {
+    estado.expandedStep = estado.expandedStep === id ? null : id;
+    renderizarApp();
+}
 
+function iniciarVerificacion(componenteId, verificacionId) {
+    const componente = datosJI.find(c => c.id === componenteId);
+    const verificacion = componente.verificaciones.find(v => v.id === verificacionId);
+    verificacion.inicio = new Date().toISOString();
+    estado.activeCheck = verificacionId;
+    renderizarApp();
+}
 
-        function iniciarVerificacion(componenteId, verificacionId) {
-                const componente = datosJI.find(c => c.id === componenteId);
-                const verificacion = componente.verificaciones.find(v => v.id === verificacionId);
-                verificacion.inicio = new Date().toISOString();
-                estado.activeCheck = verificacionId;
-                renderizarApp();
-            }
+function completarVerificacion(componenteId, verificacionId, estado) {
+    const componente = datosJI.find(c => c.id === componenteId);
+    const verificacion = componente.verificaciones.find(v => v.id === verificacionId);
+    verificacion.fin = new Date().toISOString();
+    verificacion.estado = estado;
+    renderizarApp();
+}
 
-            function completarVerificacion(componenteId, verificacionId, estado) {
-                const componente = datosJI.find(c => c.id === componenteId);
-                const verificacion = componente.verificaciones.find(v => v.id === verificacionId);
-                verificacion.fin = new Date().toISOString();
-                verificacion.estado = estado;
-                renderizarApp();
-            }
+function noCompletarVerificacion(componenteId, verificacionId) {
+    const notas = prompt("Indica el motivo por el que no se pudo completar:");
+    if (notas) {
+        const componente = datosJI.find(c => c.id === componenteId);
+        const verificacion = componente.verificaciones.find(v => v.id === verificacionId);
+        verificacion.fin = new Date().toISOString();
+        verificacion.estado = false;
+        verificacion.notas = notas;
+        renderizarApp();
+    }
+}
 
-            function noCompletarVerificacion(componenteId, verificacionId) {
-                const notas = prompt("Indica el motivo por el que no se pudo completar:");
-                if (notas) {
-                    const componente = datosJI.find(c => c.id === componenteId);
-                    const verificacion = componente.verificaciones.find(v => v.id === verificacionId);
-                    verificacion.fin = new Date().toISOString();
-                    verificacion.estado = false;
-                    verificacion.notas = notas;
-                    renderizarApp();
-                }
-            }
+function mostrarImagen(src, titulo, descripcion) {
+    const modal = document.getElementById('imageModal');
+    const imagen = document.getElementById('modalImage');
+    const tituloEl = document.getElementById('modalTitle');
+    const descEl = document.getElementById('modalDescription');
 
-            function mostrarImagen(src, titulo, descripcion) {
-                const modal = document.getElementById('imageModal');
-                const imagen = document.getElementById('modalImage');
-                const tituloEl = document.getElementById('modalTitle');
-                const descEl = document.getElementById('modalDescription');
+    imagen.src = src;
+    tituloEl.textContent = titulo;
+    descEl.textContent = descripcion;
+    modal.classList.add('active');
+}
 
-                imagen.src = src;
-                tituloEl.textContent = titulo;
-                descEl.textContent = descripcion;
-                modal.classList.add('active');
-            }
+function cerrarModal() {
+    document.getElementById('imageModal').classList.remove('active');
+}
 
-            function cerrarModal() {
-                document.getElementById('imageModal').classList.remove('active');
-            }
+// Cerrar modal al hacer clic fuera de la imagen
+document.getElementById('imageModal').addEventListener('click', function(e) {
+    if (e.target === this) {
+        this.classList.remove('active');
+    }
+});
 
-            // Cerrar modal al hacer clic fuera de la imagen
-            document.getElementById('imageModal').addEventListener('click', function(e) {
-                if (e.target === this) {
-                    this.classList.remove('active');
-                }
-            });
+// Renderizar aplicación inicial
+function renderizarApp() {
+    const app = document.getElementById('app');
+    app.innerHTML = datosJI.map(renderizarComponente).join('');
+}
 
-            // Renderizar aplicación inicial
-            function renderizarApp() {
-                const app = document.getElementById('app');
-                app.innerHTML = datosJI.map(renderizarComponente).join('');
-            }
-
-            // Iniciar la aplicación
-            renderizarApp();
-        </script>
-    </body>
+// Iniciar la aplicación
+renderizarApp();
+</script>
+</body>
 </html>
