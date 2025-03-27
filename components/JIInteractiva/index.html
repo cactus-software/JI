@@ -113,7 +113,7 @@
 
         @media (min-width: 768px) {
             .verificacion-grid {
-                grid-template-columns: 1.5fr 1fr;
+                grid-template-columns: 1fr;
             }
         }
 
@@ -165,6 +165,7 @@
             align-items: center;
             width: 100%;
             margin: 1.5rem 0;
+            text-align: center;
         }
 
         #capturadas {
@@ -201,10 +202,10 @@
             border: none;
             cursor: pointer;
             font-weight: 500;
-            width: 100%;
-            max-width: 300px;
+            width: 50%;
+            max-width: 400px;
             justify-content: center;
-            margin: 0.5rem 0;
+            margin: 0.5rem auto;
             text-transform: uppercase;
             font-size: 0.9rem;
             letter-spacing: 0.5px;
@@ -456,14 +457,10 @@
             return componente.verificaciones.map(ver => `
                 <div class="verificacion" data-ver-id="${ver.id}">
                     <h3>${ver.punto}</h3>
-                    <div class="verificacion-grid">
-                        <div>
-                            ${renderizarInspecciones(ver.inspecciones)}
-                        </div>
-                        <div>
-                            ${renderizarImagenes(ver.imagenes)}
-                            ${renderizarBotones(componente.id, ver)}
-                        </div>
+                    <div>
+                        ${renderizarInspecciones(ver.inspecciones)}
+                        ${renderizarImagenes(ver.imagenes)}
+                        ${renderizarBotones(componente.id, ver)}
                     </div>
                 </div>
             `).join('');
