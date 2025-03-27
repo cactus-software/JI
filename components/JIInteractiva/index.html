@@ -103,18 +103,7 @@
             margin-bottom: 1rem;
             padding-bottom: 0.5rem;
             border-bottom: 2px solid var(--color-primary);
-        }
-
-        .verificacion-grid {
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: 2rem;
-        }
-
-        @media (min-width: 768px) {
-            .verificacion-grid {
-                grid-template-columns: 1fr;
-            }
+            text-align: center;
         }
 
         .texto-info {
@@ -124,6 +113,56 @@
             margin-bottom: 1rem;
             border-left: 4px solid var(--color-primary);
             text-align: justify;
+        }
+
+        /* Carrusel */
+        .carousel-container {
+            position: relative;
+            margin: 1rem 0;
+            padding: 1rem;
+            background: var(--color-white);
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .carousel-slide {
+            display: none;
+            padding: 1rem;
+            text-align: center;
+        }
+
+        .carousel-slide.active {
+            display: block;
+        }
+
+        .carousel-nav {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+
+        .progress-indicator {
+            display: flex;
+            justify-content: center;
+            gap: 0.5rem;
+            margin: 1rem 0;
+        }
+
+        .progress-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: #ccc;
+            cursor: pointer;
+        }
+
+        .progress-dot.active {
+            background: var(--color-primary);
+        }
+
+        .progress-dot.completed {
+            background: #2d8a2d;
         }
 
         /* Camera styles */
@@ -150,12 +189,10 @@
 
         .captured-image {
             width: 100%;
-            max-width: 640px;
+            max-width: 500px;
             border-radius: 8px;
-            margin: 1rem 0;
+            margin: 1rem auto;
             display: block;
-            margin-left: auto;
-            margin-right: auto;
         }
 
         /* Ajustes para botones y fotos capturadas */
@@ -182,7 +219,7 @@
             background: var(--color-light);
             border-radius: 8px;
             width: 100%;
-            max-width: 640px;
+            max-width: 600px;
             text-align: center;
         }
 
@@ -202,7 +239,7 @@
             border: none;
             cursor: pointer;
             font-weight: 500;
-            width: 50%;
+            width: 80%;
             max-width: 400px;
             justify-content: center;
             margin: 0.5rem auto;
@@ -237,6 +274,21 @@
 
         .btn-danger:hover {
             background: #b71c1c;
+        }
+
+        .btn-secondary {
+            background: #555;
+            color: var(--color-white);
+        }
+
+        .btn-secondary:hover {
+            background: #444;
+        }
+
+        .btn-disabled {
+            background: #aaa;
+            color: #ddd;
+            cursor: not-allowed;
         }
 
         /* Modal */
@@ -289,7 +341,7 @@
 
         .imagen-container img {
             width: 100%;
-            max-width: 400px;
+            max-width: 500px;
             border-radius: 8px;
             cursor: pointer;
             transition: transform 0.3s ease;
@@ -314,6 +366,37 @@
             max-width: 500px;
             margin-left: auto;
             margin-right: auto;
+        }
+
+        /* Resumen componente */
+        .resumen-verificaciones {
+            margin-top: 2rem;
+            padding: 1rem;
+            background: var(--color-white);
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .resumen-verificaciones h3 {
+            text-align: center;
+            color: var(--color-primary);
+            margin-bottom: 1rem;
+        }
+
+        .verificacion-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.8rem;
+            border-bottom: 1px solid #eee;
+        }
+
+        .verificacion-item:last-child {
+            border-bottom: none;
+        }
+
+        .verificacion-estado {
+            font-weight: bold;
         }
     </style>
 </head>
@@ -362,28 +445,43 @@
                 verificaciones: [
                     {
                         id: "1-1",
-                        punto: "Revisión de Apariencia",
-                        inspecciones: [
-                            {
-                                detalle: "Verificar oxidación o suciedad en la superficie",
-                                metodo: "Inspección visual",
-                                correccion: "Limpieza"
-                            },
-                            {
-                                detalle: "Verificar abolladuras, grietas y daños en la superficie",
-                                metodo: "Inspección visual", 
-                                correccion: "Reemplazo de pieza"
-                            },
-                            {
-                                detalle: "Verificar juego/soltura de la placa",
-                                metodo: "Verificación de ajuste",
-                                correccion: "Ajuste de tornillos, Reemplazo de tornillos"
-                            }
-                        ],
+                        punto: "Verificar oxidación o suciedad en la superficie",
+                        metodo: "Inspección visual",
+                        correccion: "Limpieza",
                         imagenes: [{
                             src: "./images/bakelite.jpg",
                             descripcion: "Vista general de la placa bakelita",
-                            puntosClave: "Revisar toda la superficie buscando daños"
+                            puntosClave: "Revisar toda la superficie buscando suciedad u oxidación"
+                        }],
+                        inicio: null,
+                        fin: null,
+                        estado: null,
+                        notas: ""
+                    },
+                    {
+                        id: "1-2",
+                        punto: "Verificar abolladuras, grietas y daños en la superficie",
+                        metodo: "Inspección visual",
+                        correccion: "Reemplazo de pieza",
+                        imagenes: [{
+                            src: "./images/bakelite-damage.jpg",
+                            descripcion: "Ejemplo de grietas en baquelita",
+                            puntosClave: "Buscar daños físicos en toda la superficie"
+                        }],
+                        inicio: null,
+                        fin: null,
+                        estado: null,
+                        notas: ""
+                    },
+                    {
+                        id: "1-3",
+                        punto: "Verificar juego/soltura de la placa",
+                        metodo: "Verificación de ajuste",
+                        correccion: "Ajuste de tornillos, Reemplazo de tornillos",
+                        imagenes: [{
+                            src: "./images/bakelite-loose.jpg",
+                            descripcion: "Ajuste de tornillos en la placa",
+                            puntosClave: "Comprobar que no haya movimiento"
                         }],
                         inicio: null,
                         fin: null,
@@ -399,23 +497,28 @@
                 verificaciones: [
                     {
                         id: "2-1",
-                        punto: "Revisión de Superficie",
-                        inspecciones: [
-                            {
-                                detalle: "Verificar oxidación o suciedad en la superficie",
-                                metodo: "Inspección visual",
-                                correccion: "Pulido, limpieza"
-                            },
-                            {
-                                detalle: "Verificar abolladuras, daños y grietas en la superficie",
-                                metodo: "Inspección visual",
-                                correccion: "Pulido, Reemplazo de pieza"
-                            }
-                        ],
+                        punto: "Verificar oxidación o suciedad en la superficie",
+                        metodo: "Inspección visual",
+                        correccion: "Pulido, limpieza",
                         imagenes: [{
                             src: "./images/fixed-plate.jpg",
                             descripcion: "Placa de instalación",
-                            puntosClave: "Inspeccionar superficie y bordes"
+                            puntosClave: "Buscar suciedad y óxido"
+                        }],
+                        inicio: null,
+                        fin: null,
+                        estado: null,
+                        notas: ""
+                    },
+                    {
+                        id: "2-2",
+                        punto: "Verificar abolladuras, daños y grietas en la superficie",
+                        metodo: "Inspección visual",
+                        correccion: "Pulido, Reemplazo de pieza",
+                        imagenes: [{
+                            src: "./images/fixed-plate-damage.jpg",
+                            descripcion: "Ejemplo de daños en placa",
+                            puntosClave: "Inspeccionar toda la superficie y bordes"
                         }],
                         inicio: null,
                         fin: null,
@@ -429,7 +532,8 @@
         // Variables globales
         let estado = {
             expandedStep: null,
-            activeCheck: null
+            activeComponent: null,
+            activeCarouselSlide: 0
         };
 
         let stream = null;
@@ -447,54 +551,94 @@
                         </div>
                     </div>
                     <div class="componente-content ${estado.expandedStep === componente.id ? 'active' : ''}">
-                        ${renderizarVerificaciones(componente)}
+                        ${componente.id === estado.expandedStep ? renderizarCarrusel(componente) : ''}
                     </div>
                 </div>
             `;
         }
 
-        function renderizarVerificaciones(componente) {
-            return componente.verificaciones.map(ver => `
-                <div class="verificacion" data-ver-id="${ver.id}">
-                    <h3>${ver.punto}</h3>
-                    <div>
-                        ${renderizarInspecciones(ver.inspecciones)}
-                        ${renderizarImagenes(ver.imagenes)}
-                        ${renderizarBotones(componente.id, ver)}
+        function renderizarCarrusel(componente) {
+            estado.activeComponent = componente.id;
+            
+            // Verificar si todas las verificaciones están completas
+            const todasCompletas = componente.verificaciones.every(v => v.fin !== null);
+            
+            let html = `
+                <div class="carousel-container">
+                    <div class="progress-indicator">
+                        ${componente.verificaciones.map((ver, index) => `
+                            <div 
+                                class="progress-dot ${index === estado.activeCarouselSlide ? 'active' : ''} ${ver.fin ? 'completed' : ''}" 
+                                onclick="cambiarSlide(${index}, ${componente.id})"
+                                title="${ver.punto}"
+                            ></div>
+                        `).join('')}
+                    </div>`;
+            
+            // Slides del carrusel
+            componente.verificaciones.forEach((ver, index) => {
+                html += `
+                    <div class="carousel-slide ${index === estado.activeCarouselSlide ? 'active' : ''}">
+                        <h3>Punto ${index + 1}: ${ver.punto}</h3>
+                        <div class="texto-info">
+                            <p><strong>Método:</strong> ${ver.metodo}</p>
+                            <p><strong>Corrección:</strong> ${ver.correccion}</p>
+                        </div>
+                        
+                        <div class="imagen-container">
+                            ${ver.imagenes.map(img => `
+                                <img 
+                                    src="${img.src}" 
+                                    alt="${img.descripcion}"
+                                    onclick="mostrarImagen('${img.src}', '${img.descripcion}', '${img.puntosClave}')"
+                                >
+                                <p><strong>${img.descripcion}</strong></p>
+                                <p>${img.puntosClave}</p>
+                            `).join('')}
+                        </div>
+                        
+                        ${renderizarAcciones(componente.id, ver, index, componente.verificaciones.length)}
                     </div>
-                </div>
-            `).join('');
+                `;
+            });
+            
+            // Añadir resumen si todas las verificaciones están completas
+            if (todasCompletas) {
+                html += renderizarResumen(componente);
+            }
+            
+            html += `</div>`;
+            return html;
         }
 
-        function renderizarInspecciones(inspecciones) {
-            return inspecciones.map((insp, index) => `
-                <div class="texto-info">
-                    <h4>📋 Punto ${index + 1}</h4>
-                    <p><strong>Detalle:</strong> ${insp.detalle}</p>
-                    <p><strong>Método:</strong> ${insp.metodo}</p>
-                    <p><strong>Corrección:</strong> ${insp.correccion}</p>
-                </div>
-            `).join('');
-        }
-
-        function renderizarImagenes(imagenes) {
+        function renderizarResumen(componente) {
             return `
-                <h4 style="text-align: center;">📷 Imágenes de Referencia</h4>
-                <div class="imagen-container">
-                    ${imagenes.map(img => `
-                        <img 
-                            src="${img.src}" 
-                            alt="${img.descripcion}"
-                            onclick="mostrarImagen('${img.src}', '${img.descripcion}', '${img.puntosClave}')"
-                        >
-                        <p class="mt-2"><strong>${img.descripcion}</strong></p>
-                        <p>${img.puntosClave}</p>
+                <div class="resumen-verificaciones">
+                    <h3>Resumen de Verificaciones</h3>
+                    ${componente.verificaciones.map((ver, index) => `
+                        <div class="verificacion-item">
+                            <div>
+                                <strong>Punto ${index + 1}:</strong> ${ver.punto}
+                            </div>
+                            <div class="verificacion-estado">
+                                ${ver.estado ? 
+                                    '<span style="color: #2d8a2d;">✅ Completado</span>' : 
+                                    '<span style="color: #d32f2f;">❌ No Completado</span>'}
+                            </div>
+                        </div>
                     `).join('')}
+                    <div style="text-align: center; margin-top: 1.5rem;">
+                        <p><strong>Estado general:</strong> 
+                            ${componente.verificaciones.every(v => v.estado) ? 
+                                '<span style="color: #2d8a2d;">✅ Componente OK</span>' : 
+                                '<span style="color: #d32f2f;">❌ Componente requiere atención</span>'}
+                        </p>
+                    </div>
                 </div>
             `;
         }
 
-        function renderizarBotones(componenteId, verificacion) {
+        function renderizarAcciones(componenteId, verificacion, slideIndex, totalSlides) {
             let html = '<div class="actions-container">';
             
             if (!verificacion.inicio) {
@@ -547,6 +691,26 @@
                     </div>`;
             }
 
+            // Agregar navegación del carrusel
+            html += `
+                <div class="carousel-nav">
+                    <button 
+                        class="btn ${slideIndex > 0 ? 'btn-secondary' : 'btn-disabled'}" 
+                        onclick="cambiarSlide(${slideIndex - 1}, ${componenteId})"
+                        ${slideIndex > 0 ? '' : 'disabled'}
+                    >
+                        ⬅️ Anterior
+                    </button>
+                    
+                    <button 
+                        class="btn ${slideIndex < totalSlides - 1 && verificacion.fin ? 'btn-primary' : 'btn-disabled'}" 
+                        onclick="cambiarSlide(${slideIndex + 1}, ${componenteId})"
+                        ${slideIndex < totalSlides - 1 && verificacion.fin ? '' : 'disabled'}
+                    >
+                        Siguiente ➡️
+                    </button>
+                </div>`;
+
             return html;
         }
 
@@ -564,14 +728,26 @@
         // Funciones de eventos
         function toggleComponente(id) {
             estado.expandedStep = estado.expandedStep === id ? null : id;
+            estado.activeCarouselSlide = 0;
             renderizarApp();
+        }
+
+        function cambiarSlide(slideIndex, componenteId) {
+            const componente = datosJI.find(c => c.id === componenteId);
+            
+            // Verificar si el slide anterior está completado o si estamos retrocediendo
+            const slideActual = estado.activeCarouselSlide;
+            
+            if (slideIndex < slideActual || componente.verificaciones[slideActual].fin) {
+                estado.activeCarouselSlide = slideIndex;
+                renderizarApp();
+            }
         }
 
         function iniciarVerificacion(componenteId, verificacionId) {
             const componente = datosJI.find(c => c.id === componenteId);
             const verificacion = componente.verificaciones.find(v => v.id === verificacionId);
             verificacion.inicio = new Date().toISOString();
-            estado.activeCheck = verificacionId;
             renderizarApp();
         }
 
@@ -580,6 +756,15 @@
             const verificacion = componente.verificaciones.find(v => v.id === verificacionId);
             verificacion.fin = new Date().toISOString();
             verificacion.estado = estado;
+            
+            // Avanzar automáticamente al siguiente slide si no es el último
+            const slideIndex = componente.verificaciones.findIndex(v => v.id === verificacionId);
+            if (slideIndex < componente.verificaciones.length - 1) {
+                setTimeout(() => {
+                    cambiarSlide(slideIndex + 1, componenteId);
+                }, 1000);
+            }
+            
             renderizarApp();
         }
 
@@ -591,6 +776,15 @@
                 verificacion.fin = new Date().toISOString();
                 verificacion.estado = false;
                 verificacion.notas = notas;
+                
+                // Avanzar automáticamente al siguiente slide si no es el último
+                const slideIndex = componente.verificaciones.findIndex(v => v.id === verificacionId);
+                if (slideIndex < componente.verificaciones.length - 1) {
+                    setTimeout(() => {
+                        cambiarSlide(slideIndex + 1, componenteId);
+                    }, 1000);
+                }
+                
                 renderizarApp();
             }
         }
@@ -689,6 +883,3 @@
         }
 
         renderizarApp();
-    </script>
-</body>
-</html>
