@@ -482,17 +482,26 @@
             border-bottom: none;
         }
 
-        .verificacion-estado {
-            font-weight: bold;
-        }
-        
+        /* Estilos específicos para carrusel y contenidos */
         .texto-info {
+            display: block !important;
             background: var(--color-light);
             padding: 1rem;
             border-radius: 6px;
             margin-bottom: 1rem;
             border-left: 4px solid var(--color-primary);
             text-align: justify;
+        }
+        
+        /* Punto actual del carrusel */
+        .punto-actual {
+            margin: 1rem 0;
+            padding: 0.5rem;
+            background-color: #f9f9f9;
+            border-left: 4px solid var(--color-primary);
+            text-align: center;
+            font-weight: bold;
+            display: block !important;
         }
 
         .carousel-slide {
@@ -826,6 +835,21 @@
                     content.style.paddingTop = totalHeight + 'px';
                 }
             }
+            
+            // Asegurar que el contenido del carrusel sea visible
+            setTimeout(function() {
+                // Forzar visualización de carrusel y slides
+                document.querySelectorAll('.carousel-container, .carousel-slide.active, .componente-content, .texto-info, .imagen-container, .actions-container').forEach(function(el) {
+                    if (el) {
+                        el.style.display = 'block';
+                        el.style.visibility = 'visible';
+                    }
+                });
+                
+                // Log para verificar slides
+                console.log("Slides disponibles:", document.querySelectorAll('.carousel-slide').length);
+                console.log("Slide activo:", document.querySelectorAll('.carousel-slide.active').length);
+            }, 100);
         };
         // Variables globales para el carrusel principal
         let carruselPrincipal = {
