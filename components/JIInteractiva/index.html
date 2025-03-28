@@ -807,6 +807,16 @@
     </div>
 
     <script>
+        window.onload = function() {
+            renderizarApp();
+            // Añadido timeout para asegurar que el contenido sea visible
+            setTimeout(function() {
+                document.querySelectorAll('.carousel-container, .carousel-slide.active, .componente-content').forEach(function(el) {
+                    el.style.display = 'block';
+                    el.style.visibility = 'visible';
+                });
+            }, 500);
+        };
         // Variables globales para el carrusel principal
         let carruselPrincipal = {
             activeComponent: 0,
@@ -1368,7 +1378,6 @@
             }
         });
 
-        // Iniciar la aplicación
         function renderizarApp() {
             // Actualizar componentes completados
             carruselPrincipal.componentesCompletados = datosJI
@@ -1378,6 +1387,11 @@
             // Renderizar componentes
             const app = document.getElementById('app');
             app.innerHTML = renderizarComponentes();
+            
+            // Verificar el estado actual después del renderizado
+            console.log("Estado actual:", estado);
+            console.log("Carrusel principal:", carruselPrincipal);
+            console.log("DOM actualizado:", app.innerHTML.length > 0 ? "Contenido generado" : "Sin contenido");
         }
 
         renderizarApp();
