@@ -37,7 +37,7 @@
         /* Header */
         .header {
             background: var(--color-primary);
-            padding: 2rem 0;
+            padding: 0.75rem 0;
             text-align: center;
             position: sticky;
             top: 0;
@@ -47,14 +47,15 @@
 
         .header h1 {
             color: var(--color-white);
-            font-size: 2.5rem;
+            font-size: 1.5rem;
             font-weight: normal;
-            margin-bottom: 1rem;
+            margin-bottom: 0.25rem;
         }
 
         .header p {
             color: var(--color-white);
-            font-size: 1.2rem;
+            font-size: 0.9rem;
+            margin: 0;
         }
 
         /* Navegación principal */
@@ -66,27 +67,28 @@
         .main-carousel-nav {
             background: var(--color-dark);
             color: var(--color-white);
-            padding: 1rem 0;
+            padding: 0.5rem 0;
             position: sticky;
-            top: 88px; /* Ajustar según la altura del header */
+            top: 56px; /* Ajustado al nuevo tamaño del header */
             z-index: 40;
             box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            font-size: 0.85rem;
         }
         
         .main-progress-indicators {
             display: flex;
             justify-content: center;
-            margin-bottom: 1rem;
+            margin-bottom: 0.5rem;
         }
         
         #main-progress-dots {
             display: flex;
-            gap: 1rem;
+            gap: 0.5rem;
         }
         
         .main-progress-dot {
-            width: 15px;
-            height: 15px;
+            width: 12px;
+            height: 12px;
             border-radius: 50%;
             background-color: #666;
             cursor: pointer;
@@ -106,14 +108,14 @@
         .main-progress-dot:hover::after {
             content: attr(data-title);
             position: absolute;
-            top: -30px;
+            top: -25px;
             left: 50%;
             transform: translateX(-50%);
             background: rgba(0,0,0,0.8);
             color: white;
-            padding: 5px 10px;
+            padding: 3px 8px;
             border-radius: 4px;
-            font-size: 0.8rem;
+            font-size: 0.75rem;
             white-space: nowrap;
             z-index: 10;
         }
@@ -121,7 +123,7 @@
         #main-carousel-controls {
             display: flex;
             justify-content: center;
-            gap: 1rem;
+            gap: 0.5rem;
         }
         
         /* Componentes y verificaciones */
@@ -305,8 +307,8 @@
         .btn {
             display: inline-flex;
             align-items: center;
-            padding: 0.8rem 1.5rem;
-            border-radius: 6px;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
             border: none;
             cursor: pointer;
             font-weight: 500;
@@ -315,7 +317,7 @@
             justify-content: center;
             margin: 0.5rem auto;
             text-transform: uppercase;
-            font-size: 0.9rem;
+            font-size: 0.75rem;
             letter-spacing: 0.5px;
             transition: all 0.3s ease;
         }
@@ -644,7 +646,7 @@
                 `;
             }).join('');
             
-            // Renderizar controles
+            // Renderizar controles más compactos
             const esUltimoComponente = carruselPrincipal.activeComponent === datosJI.length - 1;
             const componenteActual = datosJI[carruselPrincipal.activeComponent];
             const componenteCompletado = esComponenteCompletado(componenteActual);
@@ -652,18 +654,20 @@
             mainControls.innerHTML = `
                 <button 
                     class="btn ${carruselPrincipal.activeComponent > 0 ? 'btn-secondary' : 'btn-disabled'}" 
+                    style="max-width: 150px; padding: 0.3rem 0.7rem; margin: 0.2rem;"
                     onclick="cambiarComponente(${carruselPrincipal.activeComponent - 1})"
                     ${carruselPrincipal.activeComponent > 0 ? '' : 'disabled'}
                 >
-                    ⬅️ Componente Anterior
+                    ⬅️ Anterior
                 </button>
                 
                 <button 
                     class="btn ${!esUltimoComponente && componenteCompletado ? 'btn-primary' : 'btn-disabled'}" 
+                    style="max-width: 150px; padding: 0.3rem 0.7rem; margin: 0.2rem;"
                     onclick="cambiarComponente(${carruselPrincipal.activeComponent + 1})"
                     ${!esUltimoComponente && componenteCompletado ? '' : 'disabled'}
                 >
-                    Siguiente Componente ➡️
+                    Siguiente ➡️
                 </button>
             `;
         }
@@ -771,12 +775,12 @@
             
             if (!verificacion.inicio) {
                 html += `
-                    <button class="btn btn-primary" onclick="iniciarVerificacion(${componenteId}, '${verificacion.id}')">
+                    <button class="btn btn-primary" style="margin-top: 0.5rem;" onclick="iniciarVerificacion(${componenteId}, '${verificacion.id}')">
                         ⏱️ Iniciar Verificación
                     </button>`;
             } else if (!verificacion.fin) {
                 html += `
-                    <button class="btn btn-primary" onclick="iniciarCamara(${componenteId}, '${verificacion.id}')">
+                    <button class="btn btn-primary" style="margin-top: 0.5rem;" onclick="iniciarCamara(${componenteId}, '${verificacion.id}')">
                         📸 Tomar Foto
                     </button>
                     <button class="btn btn-success" onclick="completarVerificacion(${componenteId}, '${verificacion.id}', true)">
@@ -798,7 +802,7 @@
                             <div class="foto-item">
                                 <div class="imagen-header">
                                     <span>Foto ${index + 1}</span>
-                                    <button class="btn btn-danger" style="max-width: 150px;" onclick="eliminarFoto('${verificacion.id}', ${index})">
+                                    <button class="btn btn-danger" style="max-width: 120px; padding: 0.3rem 0.7rem; margin: 0;" onclick="eliminarFoto('${verificacion.id}', ${index})">
                                         🗑️ Eliminar
                                     </button>
                                 </div>
@@ -819,11 +823,12 @@
                     </div>`;
             }
 
-            // Agregar navegación del carrusel
+            // Agregar navegación del carrusel en versión compacta
             html += `
-                <div class="carousel-nav">
+                <div class="carousel-nav" style="margin-top: 0.8rem;">
                     <button 
                         class="btn ${slideIndex > 0 ? 'btn-secondary' : 'btn-disabled'}" 
+                        style="max-width: 120px; padding: 0.3rem 0.7rem; margin: 0 0.5rem;"
                         onclick="cambiarSlide(${slideIndex - 1}, ${componenteId})"
                         ${slideIndex > 0 ? '' : 'disabled'}
                     >
@@ -832,6 +837,7 @@
                     
                     <button 
                         class="btn ${slideIndex < totalSlides - 1 && verificacion.fin ? 'btn-primary' : 'btn-disabled'}" 
+                        style="max-width: 120px; padding: 0.3rem 0.7rem; margin: 0 0.5rem;"
                         onclick="cambiarSlide(${slideIndex + 1}, ${componenteId})"
                         ${slideIndex < totalSlides - 1 && verificacion.fin ? '' : 'disabled'}
                     >
