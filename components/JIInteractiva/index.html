@@ -27,110 +27,74 @@
             line-height: 1.6;
         }
 
-        /* Container */
+        /* Ajustes adicionales */
         .container {
             max-width: 1200px;
             margin: 0 auto;
-            padding: 1.5rem;
+            padding: 0.5rem;
+        }
+        
+        /* Estilos para los puntos indicadores del componente */
+        .dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background-color: rgba(255,255,255,0.4);
+            display: inline-block;
+            margin: 0 3px;
+        }
+        
+        .dot.active {
+            background-color: white;
+            transform: scale(1.2);
+        }
+        
+        .dot.completed {
+            background-color: rgba(45, 138, 45, 0.8);
         }
 
-        /* Header */
+        /* Header ultracompacto */
         .header {
             background: var(--color-primary);
-            padding: 0.75rem 0;
+            padding: 0.3rem 0;
             text-align: center;
             position: sticky;
             top: 0;
             z-index: 50;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .header .container {
+            padding: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
         .header h1 {
             color: var(--color-white);
-            font-size: 1.5rem;
+            font-size: 1.2rem;
             font-weight: normal;
-            margin-bottom: 0.25rem;
+            margin: 0;
+            margin-right: 0.5rem;
         }
 
         .header p {
             color: var(--color-white);
-            font-size: 0.9rem;
+            font-size: 0.75rem;
             margin: 0;
+            border-left: 1px solid rgba(255,255,255,0.5);
+            padding-left: 0.5rem;
         }
 
-        /* Navegación principal */
-        .main-container {
-            display: flex;
-            flex-direction: column;
-        }
-        
-        .main-carousel-nav {
-            background: var(--color-dark);
-            color: var(--color-white);
-            padding: 0.5rem 0;
-            position: sticky;
-            top: 56px; /* Ajustado al nuevo tamaño del header */
-            z-index: 40;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-            font-size: 0.85rem;
-        }
-        
-        .main-progress-indicators {
-            display: flex;
-            justify-content: center;
-            margin-bottom: 0.5rem;
-        }
-        
-        #main-progress-dots {
-            display: flex;
-            gap: 0.5rem;
-        }
-        
-        .main-progress-dot {
-            width: 12px;
-            height: 12px;
-            border-radius: 50%;
-            background-color: #666;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            position: relative;
-        }
-        
-        .main-progress-dot.active {
-            background-color: var(--color-primary);
-            transform: scale(1.2);
-        }
-        
-        .main-progress-dot.completed {
-            background-color: #2d8a2d;
-        }
-        
-        .main-progress-dot:hover::after {
-            content: attr(data-title);
-            position: absolute;
-            top: -25px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: rgba(0,0,0,0.8);
-            color: white;
-            padding: 3px 8px;
-            border-radius: 4px;
-            font-size: 0.75rem;
-            white-space: nowrap;
-            z-index: 10;
-        }
-        
-        #main-carousel-controls {
-            display: flex;
-            justify-content: center;
-            gap: 0.5rem;
-        }
-        
-        /* Componentes y verificaciones */
+        /* Integramos la navegación principal en el componente */
         .componente-card {
             background: var(--color-white);
             border-radius: 8px;
-            margin: 1rem 0;
+            margin: 0.5rem 0;
             box-shadow: 0 1px 3px rgba(0,0,0,0.1);
             overflow: hidden;
             display: none;
@@ -142,15 +106,65 @@
         
         .componente-header {
             background: var(--color-dark);
-            padding: 1.2rem;
+            padding: 0.75rem 0.5rem;
             display: flex;
             align-items: center;
+            justify-content: space-between;
             color: var(--color-white);
+            position: sticky;
+            top: 40px; /* Altura del header */
+            z-index: 30;
+        }
+        
+        .componente-header-content {
+            display: flex;
+            align-items: center;
         }
         
         .componente-header h2 {
             margin: 0;
-            font-size: 1.2rem;
+            font-size: 1rem;
+        }
+        
+        .componente-header p {
+            margin: 0;
+            font-size: 0.8rem;
+            opacity: 0.8;
+        }
+        
+        .componente-nav {
+            display: flex;
+            gap: 0.5rem;
+        }
+        
+        .nav-button {
+            background: rgba(255,255,255,0.2);
+            border: none;
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 1rem;
+        }
+        
+        .nav-button:disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+        }
+        
+        .nav-button:not(:disabled):hover {
+            background: rgba(255,255,255,0.3);
+        }
+        
+        .nav-indicator {
+            display: flex;
+            gap: 5px;
+            align-items: center;
+            margin: 0 0.5rem;
         }
 
         .componente-content {
@@ -191,8 +205,8 @@
         /* Carrusel */
         .carousel-container {
             position: relative;
-            margin: 1rem 0;
-            padding: 1rem;
+            margin: 0.5rem 0;
+            padding: 0.5rem;
             background: var(--color-white);
             border-radius: 8px;
             box-shadow: 0 2px 4px rgba(0,0,0,0.1);
@@ -200,7 +214,7 @@
 
         .carousel-slide {
             display: none;
-            padding: 1rem;
+            padding: 0.5rem;
             text-align: center;
         }
 
@@ -211,20 +225,20 @@
         .carousel-nav {
             display: flex;
             justify-content: center;
-            gap: 1rem;
-            margin-top: 1.5rem;
+            gap: 0.5rem;
+            margin-top: 0.5rem;
         }
 
         .progress-indicator {
             display: flex;
             justify-content: center;
-            gap: 0.5rem;
-            margin: 1rem 0;
+            gap: 0.3rem;
+            margin: 0.5rem 0;
         }
 
         .progress-dot {
-            width: 12px;
-            height: 12px;
+            width: 8px;
+            height: 8px;
             border-radius: 50%;
             background: #ccc;
             cursor: pointer;
@@ -477,24 +491,12 @@
     <div class="header">
         <div class="container">
             <h1>Verificación de Molde</h1>
-            <p>Registro detallado de inspección y mantenimiento</p>
+            <p>Inspección y mantenimiento</p>
         </div>
     </div>
 
-    <div class="main-container">
-        <!-- Control de navegación entre componentes -->
-        <div class="main-carousel-nav">
-            <div class="container">
-                <div class="main-progress-indicators">
-                    <div id="main-progress-dots"></div>
-                </div>
-                <div id="main-carousel-controls"></div>
-            </div>
-        </div>
-        
-        <div class="container" id="app">
-            <!-- Los componentes se generarán dinámicamente aquí -->
-        </div>
+    <div class="container" id="app">
+        <!-- Los componentes se generarán dinámicamente aquí -->
     </div>
 
     <div class="modal" id="imageModal">
@@ -674,12 +676,46 @@
         
         function renderizarComponentes() {
             return datosJI.map((componente, index) => {
+                // Verificar si componente está completado y si es el último
+                const componenteCompletado = esComponenteCompletado(componente);
+                const esUltimoComponente = index === datosJI.length - 1;
+                
+                // Indicadores de navegación entre componentes
+                let dotsHtml = '';
+                for (let i = 0; i < datosJI.length; i++) {
+                    const isCompleted = carruselPrincipal.componentesCompletados.includes(datosJI[i].id);
+                    dotsHtml += `<span class="dot ${i === index ? 'active' : ''} ${isCompleted ? 'completed' : ''}"></span>`;
+                }
+                
                 return `
                     <div class="componente-card ${index === carruselPrincipal.activeComponent ? 'active' : ''}" data-id="${componente.id}">
                         <div class="componente-header">
-                            <div>
-                                <h2>${componente.componente}</h2>
-                                <p>${componente.descripcion}</p>
+                            <div class="componente-header-content">
+                                <div>
+                                    <h2>${componente.componente}</h2>
+                                    <p>${componente.descripcion}</p>
+                                </div>
+                            </div>
+                            <div class="componente-nav">
+                                <div class="nav-indicator">
+                                    ${dotsHtml}
+                                </div>
+                                <button 
+                                    class="nav-button" 
+                                    onclick="cambiarComponente(${index - 1})"
+                                    ${index > 0 ? '' : 'disabled'}
+                                    title="Componente anterior"
+                                >
+                                    ◀
+                                </button>
+                                <button 
+                                    class="nav-button" 
+                                    onclick="cambiarComponente(${index + 1})"
+                                    ${!esUltimoComponente && componenteCompletado ? '' : 'disabled'}
+                                    title="Siguiente componente"
+                                >
+                                    ▶
+                                </button>
                             </div>
                         </div>
                         <div class="componente-content active">
@@ -776,18 +812,18 @@
             if (!verificacion.inicio) {
                 html += `
                     <button class="btn btn-primary" style="margin-top: 0.5rem;" onclick="iniciarVerificacion(${componenteId}, '${verificacion.id}')">
-                        ⏱️ Iniciar Verificación
+                        ⏱️ Iniciar
                     </button>`;
             } else if (!verificacion.fin) {
                 html += `
                     <button class="btn btn-primary" style="margin-top: 0.5rem;" onclick="iniciarCamara(${componenteId}, '${verificacion.id}')">
-                        📸 Tomar Foto
+                        📸 Foto
                     </button>
                     <button class="btn btn-success" onclick="completarVerificacion(${componenteId}, '${verificacion.id}', true)">
-                        ✅ Completar Verificación
+                        ✅ Completar
                     </button>
                     <button class="btn btn-danger" onclick="noCompletarVerificacion(${componenteId}, '${verificacion.id}')">
-                        ❌ No se Pudo Completar
+                        ❌ Problema
                     </button>`;
             }
             
@@ -802,8 +838,8 @@
                             <div class="foto-item">
                                 <div class="imagen-header">
                                     <span>Foto ${index + 1}</span>
-                                    <button class="btn btn-danger" style="max-width: 120px; padding: 0.3rem 0.7rem; margin: 0;" onclick="eliminarFoto('${verificacion.id}', ${index})">
-                                        🗑️ Eliminar
+                                    <button class="btn btn-danger" style="max-width: 100px; padding: 0.2rem 0.5rem; margin: 0;" onclick="eliminarFoto('${verificacion.id}', ${index})">
+                                        🗑️
                                     </button>
                                 </div>
                                 <img src="${img.imageData}" class="captured-image" alt="Foto capturada ${index + 1}">
@@ -816,32 +852,32 @@
             if (verificacion.fin) {
                 html += `
                     <div class="verificacion-resultado">
-                        <h4>Resultado de la Verificación</h4>
-                        <p>⏱️ Duración: ${formatearTiempo(calcularDuracion(verificacion.inicio, verificacion.fin))}</p>
+                        <h4>Resultado</h4>
+                        <p>⏱️ ${formatearTiempo(calcularDuracion(verificacion.inicio, verificacion.fin))}</p>
                         <p>${verificacion.estado ? '✅ Completado' : '❌ No Completado'}</p>
-                        ${verificacion.notas ? `<p>📝 Notas: ${verificacion.notas}</p>` : ''}
+                        ${verificacion.notas ? `<p>📝 ${verificacion.notas}</p>` : ''}
                     </div>`;
             }
 
-            // Agregar navegación del carrusel en versión compacta
+            // Agregar navegación del carrusel en versión minimalista
             html += `
-                <div class="carousel-nav" style="margin-top: 0.8rem;">
+                <div class="carousel-nav" style="margin-top: 0.5rem;">
                     <button 
                         class="btn ${slideIndex > 0 ? 'btn-secondary' : 'btn-disabled'}" 
-                        style="max-width: 120px; padding: 0.3rem 0.7rem; margin: 0 0.5rem;"
+                        style="max-width: 40px; height: 40px; padding: 0; margin: 0 0.3rem; border-radius: 50%;"
                         onclick="cambiarSlide(${slideIndex - 1}, ${componenteId})"
                         ${slideIndex > 0 ? '' : 'disabled'}
                     >
-                        ⬅️ Anterior
+                        ◀
                     </button>
                     
                     <button 
                         class="btn ${slideIndex < totalSlides - 1 && verificacion.fin ? 'btn-primary' : 'btn-disabled'}" 
-                        style="max-width: 120px; padding: 0.3rem 0.7rem; margin: 0 0.5rem;"
+                        style="max-width: 40px; height: 40px; padding: 0; margin: 0 0.3rem; border-radius: 50%;"
                         onclick="cambiarSlide(${slideIndex + 1}, ${componenteId})"
                         ${slideIndex < totalSlides - 1 && verificacion.fin ? '' : 'disabled'}
                     >
-                        Siguiente ➡️
+                        ▶
                     </button>
                 </div>`;
 
@@ -1055,9 +1091,6 @@
                 .filter(c => esComponenteCompletado(c))
                 .map(c => c.id);
                 
-            // Renderizar carrusel principal
-            renderizarCarruselPrincipal();
-            
             // Renderizar componentes
             const app = document.getElementById('app');
             app.innerHTML = renderizarComponentes();
