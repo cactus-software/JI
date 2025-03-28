@@ -5,326 +5,1408 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>JI Digital - Verificación de Molde</title>
     <style>
-        /* Reset completo */
-        *, *:before, *:after {
+        /* Variables y reset */
+        :root {
+            --color-primary: #cc0000;
+            --color-dark: #333333;
+            --color-gray: #666666;
+            --color-light: #f8f8f8;
+            --color-white: #ffffff;
+        }
+
+        * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-        }
-        
-        html, body {
-            height: 100%;
-            width: 100%;
-            overflow-x: hidden;
             font-family: 'Segoe UI', Arial, sans-serif;
         }
-        
-        /* Variables */
-        :root {
-            --header-height: 38px;
-            --subheader-height: 38px;
-            --color-primary: #cc0000;
-            --color-dark: #333333;
-            --color-light: #f8f8f8;
-            --color-white: #ffffff;
-            --combined-header-height: calc(var(--header-height) + var(--subheader-height));
+
+        body {
+            background-color: var(--color-light);
+            color: var(--color-dark);
+            line-height: 1.6;
         }
-        
-        /* Header principal */
-        .main-header {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: var(--header-height);
-            background-color: var(--color-primary);
-            color: white;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 100;
-        }
-        
-        .main-header h1 {
-            font-size: 1.2rem;
-            margin: 0;
+
+        /* Ajustes adicionales */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
             padding: 0;
         }
         
-        .main-header p {
-            font-size: 0.75rem;
-            margin: 0 0 0 0.5rem;
-            padding: 0 0 0 0.5rem;
-            border-left: 1px solid rgba(255,255,255,0.5);
-        }
-        
-        /* Subheader con componentes */
-        .component-header {
-            position: fixed;
-            top: var(--header-height); /* Justo después del header principal */
-            left: 0;
-            right: 0;
-            height: var(--subheader-height);
-            background-color: var(--color-dark);
-            color: white;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 0 1rem;
-            z-index: 90;
-        }
-        
-        .component-title {
-            font-size: 1rem;
-            font-weight: normal;
-        }
-        
-        .component-subtitle {
-            font-size: 0.8rem;
-            opacity: 0.8;
-        }
-        
-        .component-nav {
-            display: flex;
-            align-items: center;
-        }
-        
-        .nav-dots {
-            display: flex;
-            margin-right: 0.5rem;
-        }
-        
-        .nav-dot {
+        /* Estilos para los puntos indicadores del componente */
+        .dot {
             width: 8px;
             height: 8px;
             border-radius: 50%;
             background-color: rgba(255,255,255,0.4);
+            display: inline-block;
             margin: 0 3px;
         }
         
-        .nav-dot.active {
+        .dot.active {
             background-color: white;
             transform: scale(1.2);
         }
         
-        .nav-dot.completed {
+        .dot.completed {
             background-color: rgba(45, 138, 45, 0.8);
         }
-        
-        .nav-btn {
-            width: 30px;
-            height: 30px;
-            border-radius: 50%;
-            background-color: rgba(255,255,255,0.2);
-            border: none;
-            color: white;
-            font-size: 1rem;
+
+        /* Header ultracompacto */
+        .header {
+            background: var(--color-primary);
+            padding: 0.3rem 0;
+            text-align: center;
+            position: sticky;
+            top: 0;
+            z-index: 50;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
             display: flex;
             align-items: center;
             justify-content: center;
-            margin-left: 5px;
-            cursor: pointer;
+            height: 39px; /* Altura fija para alinear perfectamente con la barra de componente */
+        }
+
+        .header .container {
+            padding: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .header h1 {
+            color: var(--color-white);
+            font-size: 1.2rem;
+            font-weight: normal;
+            margin: 0;
+            margin-right: 0.5rem;
+        }
+
+        .header p {
+            color: var(--color-white);
+            font-size: 0.75rem;
+            margin: 0;
+            border-left: 1px solid rgba(255,255,255,0.5);
+            padding-left: 0.5rem;
+        }
+
+        .componente-card {
+            background: var(--color-white);
+            border-radius: 0;
+            margin: 0;
+            box-shadow: none;
+            overflow: hidden;
+            display: none;
         }
         
-        .nav-btn:disabled {
+        .componente-card.active {
+            display: block;
+        }
+        
+        .componente-header {
+            background: var(--color-dark);
+            padding: 0.5rem 0.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            color: var(--color-white);
+            position: sticky;
+            top: 39px; /* Exactamente debajo del header rojo */
+            z-index: 30;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            border-top: 1px solid rgba(255,255,255,0.1);
+        }
+        
+        .componente-header-content {
+            display: flex;
+            align-items: center;
+        }
+        
+        .componente-header h2 {
+            margin: 0;
+            font-size: 1rem;
+        }
+        
+        .componente-header p {
+            margin: 0;
+            font-size: 0.8rem;
+            opacity: 0.8;
+        }
+        
+        .componente-nav {
+            display: flex;
+            gap: 0.5rem;
+        }
+        
+        .nav-button {
+            background: rgba(255,255,255,0.2);
+            border: none;
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 1rem;
+        }
+        
+        .nav-button:disabled {
             opacity: 0.3;
             cursor: not-allowed;
         }
         
-        /* Contenido principal */
-        .main-content {
-            padding-top: var(--combined-header-height);
-            background-color: var(--color-white);
+        .nav-button:not(:disabled):hover {
+            background: rgba(255,255,255,0.3);
         }
         
-        /* Carrusel de verificaciones */
-        .carousel {
-            padding: 1rem;
-        }
-        
-        .carousel-indicators {
+        .nav-indicator {
             display: flex;
-            justify-content: center;
-            margin-bottom: 1rem;
+            gap: 5px;
+            align-items: center;
+            margin: 0 0.5rem;
         }
-        
-        .carousel-dot {
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-            background-color: #ccc;
-            margin: 0 3px;
-            cursor: pointer;
-        }
-        
-        .carousel-dot.active {
-            background-color: var(--color-primary);
-        }
-        
-        .carousel-dot.completed {
-            background-color: #2d8a2d;
-        }
-        
-        .carousel-slide {
+
+        .componente-content {
             display: none;
+            padding: 1.5rem;
         }
-        
-        .carousel-slide.active {
+
+        .componente-content.active {
             display: block;
         }
-        
-        .verificacion-punto {
-            margin-bottom: 1rem;
-            text-align: center;
-            font-weight: bold;
+
+        .verificacion {
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            margin: 1rem 0;
+            padding: 1.5rem;
+            background: var(--color-white);
         }
-        
-        .verificacion-info {
-            background-color: var(--color-light);
+
+        .verificacion h3 {
+            color: var(--color-primary);
+            font-size: 1.2rem;
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid var(--color-primary);
+            text-align: center;
+        }
+
+        .texto-info {
+            background: var(--color-light);
             padding: 1rem;
             border-radius: 6px;
             margin-bottom: 1rem;
             border-left: 4px solid var(--color-primary);
+            text-align: justify;
         }
-        
-        .verificacion-acciones {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            margin: 1rem 0;
+
+        .carousel-container {
+            position: relative;
+            margin: 0;
+            padding: 0;
+            background: var(--color-white);
         }
-        
-        .btn {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            padding: 0.5rem 1rem;
-            border-radius: 4px;
-            border: none;
-            background-color: var(--color-primary);
-            color: white;
-            font-size: 0.9rem;
-            cursor: pointer;
-            width: 80%;
-            max-width: 300px;
-            margin: 0.5rem 0;
+
+        .carousel-slide {
+            display: none;
+            padding: 0.5rem;
+            text-align: center;
         }
-        
-        .btn-success {
-            background-color: #2d8a2d;
+
+        .carousel-slide.active {
+            display: block;
         }
-        
-        .btn-danger {
-            background-color: #d32f2f;
-        }
-        
+
         .carousel-nav {
             display: flex;
             justify-content: center;
+            gap: 0.5rem;
+            margin-top: 0.5rem;
+        }
+
+        .progress-indicator {
+            display: flex;
+            justify-content: center;
+            gap: 0.3rem;
+            margin: 0;
+            padding-top: 0.5rem;
+        }
+
+        .progress-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #ccc;
+            cursor: pointer;
+        }
+
+        .progress-dot.active {
+            background: var(--color-primary);
+        }
+
+        .progress-dot.completed {
+            background: #2d8a2d;
+        }
+
+        /* Camera styles */
+        .camera-container {
+            width: 100%;
+            max-width: 640px;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        #video {
+            width: 100%;
+            max-width: 640px;
+            margin-bottom: 1rem;
+            border-radius: 8px;
+        }
+
+        .camera-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            margin: 1rem 0;
+        }
+
+        .captured-image {
+            width: 100%;
+            max-width: 500px;
+            border-radius: 8px;
+            margin: 1rem auto;
+            display: block;
+        }
+
+        /* Ajustes para botones y fotos capturadas */
+        .actions-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+            margin: 1.5rem 0;
+            text-align: center;
+        }
+
+        #capturadas {
+            margin-top: 2rem;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .foto-item {
+            margin: 1rem 0;
+            padding: 1rem;
+            background: var(--color-light);
+            border-radius: 8px;
+            width: 100%;
+            max-width: 600px;
+            text-align: center;
+        }
+
+        .imagen-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        /* Botones */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            border: none;
+            cursor: pointer;
+            font-weight: 500;
+            width: 80%;
+            max-width: 400px;
+            justify-content: center;
+            margin: 0.5rem auto;
+            text-transform: uppercase;
+            font-size: 0.75rem;
+            letter-spacing: 0.5px;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary {
+            background: var(--color-primary);
+            color: var(--color-white);
+        }
+
+        .btn-primary:hover {
+            background: #b00000;
+        }
+
+        .btn-success {
+            background: #2d8a2d;
+            color: var(--color-white);
+        }
+
+        .btn-success:hover {
+            background: #237023;
+        }
+
+        .btn-danger {
+            background: #d32f2f;
+            color: var(--color-white);
+        }
+
+        .btn-danger:hover {
+            background: #b71c1c;
+        }
+
+        .btn-secondary {
+            background: #555;
+            color: var(--color-white);
+        }
+
+        .btn-secondary:hover {
+            background: #444;
+        }
+
+        .btn-disabled {
+            background: #aaa;
+            color: #ddd;
+            cursor: not-allowed;
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.85);
+            z-index: 100;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: var(--color-white);
+            padding: 2rem;
+            border-radius: 12px;
+            max-width: 90%;
+            max-height: 90vh;
+            overflow: auto;
+            position: relative;
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: var(--color-primary);
+            color: var(--color-white);
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            border: none;
+        }
+
+        /* Imagen container */
+        .imagen-container {
+            margin: 1rem 0;
+            text-align: center;
+        }
+
+        .imagen-container img {
+            width: 100%;
+            max-width: 500px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .imagen-container img:hover {
+            transform: scale(1.02);
+        }
+
+        /* Resultados */
+        .verificacion-resultado {
+            background: var(--color-light);
+            padding: 1.5rem;
+            border-radius: 8px;
             margin-top: 1rem;
+            border-left: 4px solid var(--color-primary);
+            text-align: center;
+            max-width: 500px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        /* Resumen componente */
+        .resumen-verificaciones {
+            margin-top: 2rem;
+            padding: 1rem;
+            background: var(--color-white);
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .resumen-verificaciones h3 {
+            text-align: center;
+            color: var(--color-primary);
+            margin-bottom: 1rem;
+        }
+
+        .verificacion-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.8rem;
+            border-bottom: 1px solid #eee;
+        }
+
+        .verificacion-item:last-child {
+            border-bottom: none;
+        }
+
+        /* Estilos específicos para carrusel y contenidos */
+        .texto-info {
+            display: block !important;
+            background: var(--color-light);
+            padding: 1rem;
+            border-radius: 6px;
+            margin-bottom: 1rem;
+            border-left: 4px solid var(--color-primary);
+            text-align: justify;
         }
         
-        .carousel-nav .btn {
-            width: auto;
+        /* Punto actual del carrusel */
+        .punto-actual {
+            margin: 1rem 0;
             padding: 0.5rem;
-            margin: 0 0.5rem;
+            background-color: #f9f9f9;
+            border-left: 4px solid var(--color-primary);
+            text-align: center;
+            font-weight: bold;
+            display: block !important;
+        }
+
+        .carousel-slide {
+            display: none;
+            padding: 0.5rem;
+            text-align: center;
+        }
+
+        .carousel-slide.active {
+            display: block;
+        }
+
+        .carousel-nav {
+            display: flex;
+            justify-content: center;
+            gap: 0.5rem;
+            margin-top: 0.5rem;
+        }
+
+        .progress-indicator {
+            display: flex;
+            justify-content: center;
+            gap: 0.3rem;
+            margin: 0.5rem 0;
+        }
+
+        .progress-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #ccc;
+            cursor: pointer;
+        }
+
+        .progress-dot.active {
+            background: var(--color-primary);
+        }
+
+        .progress-dot.completed {
+            background: #2d8a2d;
+        }
+
+        /* Camera styles */
+        .camera-container {
+            width: 100%;
+            max-width: 640px;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        #video {
+            width: 100%;
+            max-width: 640px;
+            margin-bottom: 1rem;
+            border-radius: 8px;
+        }
+
+        .camera-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            margin: 1rem 0;
+        }
+
+        .captured-image {
+            width: 100%;
+            max-width: 500px;
+            border-radius: 8px;
+            margin: 1rem auto;
+            display: block;
+        }
+
+        /* Ajustes para botones y fotos capturadas */
+        .actions-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+            margin: 1.5rem 0;
+            text-align: center;
+        }
+
+        #capturadas {
+            margin-top: 2rem;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .foto-item {
+            margin: 1rem 0;
+            padding: 1rem;
+            background: var(--color-light);
+            border-radius: 8px;
+            width: 100%;
+            max-width: 600px;
+            text-align: center;
+        }
+
+        .imagen-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        /* Botones */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            border: none;
+            cursor: pointer;
+            font-weight: 500;
+            width: 80%;
+            max-width: 400px;
+            justify-content: center;
+            margin: 0.5rem auto;
+            text-transform: uppercase;
+            font-size: 0.75rem;
+            letter-spacing: 0.5px;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary {
+            background: var(--color-primary);
+            color: var(--color-white);
+        }
+
+        .btn-primary:hover {
+            background: #b00000;
+        }
+
+        .btn-success {
+            background: #2d8a2d;
+            color: var(--color-white);
+        }
+
+        .btn-success:hover {
+            background: #237023;
+        }
+
+        .btn-danger {
+            background: #d32f2f;
+            color: var(--color-white);
+        }
+
+        .btn-danger:hover {
+            background: #b71c1c;
+        }
+
+        .btn-secondary {
+            background: #555;
+            color: var(--color-white);
+        }
+
+        .btn-secondary:hover {
+            background: #444;
+        }
+
+        .btn-disabled {
+            background: #aaa;
+            color: #ddd;
+            cursor: not-allowed;
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.85);
+            z-index: 100;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: var(--color-white);
+            padding: 2rem;
+            border-radius: 12px;
+            max-width: 90%;
+            max-height: 90vh;
+            overflow: auto;
+            position: relative;
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: var(--color-primary);
+            color: var(--color-white);
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            border: none;
+        }
+
+        /* Imagen container */
+        .imagen-container {
+            margin: 1rem 0;
+            text-align: center;
+        }
+
+        .imagen-container img {
+            width: 100%;
+            max-width: 500px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .imagen-container img:hover {
+            transform: scale(1.02);
+        }
+
+        /* Resultados */
+        .verificacion-resultado {
+            background: var(--color-light);
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin-top: 1rem;
+            border-left: 4px solid var(--color-primary);
+            text-align: center;
+            max-width: 500px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        /* Resumen componente */
+        .resumen-verificaciones {
+            margin-top: 2rem;
+            padding: 1rem;
+            background: var(--color-white);
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .resumen-verificaciones h3 {
+            text-align: center;
+            color: var(--color-primary);
+            margin-bottom: 1rem;
+        }
+
+        .verificacion-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.8rem;
+            border-bottom: 1px solid #eee;
+        }
+
+        .verificacion-item:last-child {
+            border-bottom: none;
+        }
+
+        .verificacion-estado {
+            font-weight: bold;
         }
     </style>
 </head>
 <body>
-    <!-- Header principal, siempre visible -->
-    <header class="main-header">
-        <h1>Verificación de Molde</h1>
-        <p>Inspección y mantenimiento</p>
-    </header>
-    
-    <!-- Subheader del componente activo -->
-    <div class="component-header">
-        <div>
-            <div class="component-title">Baquelita</div>
-            <div class="component-subtitle">Lámina de Aislamiento Térmico</div>
-        </div>
-        <div class="component-nav">
-            <div class="nav-dots">
-                <span class="nav-dot active"></span>
-                <span class="nav-dot"></span>
-            </div>
-            <button class="nav-btn" disabled>◀</button>
-            <button class="nav-btn" disabled>▶</button>
+    <div class="header">
+        <div class="container">
+            <h1 style="color:white; font-size:1.2rem; margin:0 0.5rem 0 0; padding:0; line-height:1.2;">Verificación de Molde</h1>
+            <p style="color:white; font-size:0.75rem; margin:0; padding:0 0 0 0.5rem; border-left:1px solid rgba(255,255,255,0.5); line-height:1.2;">Inspección y mantenimiento</p>
         </div>
     </div>
-    
-    <!-- Contenido principal que empieza después de los headers -->
-    <main class="main-content">
-        <div class="carousel">
-            <!-- Indicadores del carrusel -->
-            <div class="carousel-indicators">
-                <span class="carousel-dot active"></span>
-                <span class="carousel-dot"></span>
-                <span class="carousel-dot"></span>
-            </div>
-            
-            <!-- Slides del carrusel -->
-            <div class="carousel-slide active">
-                <div class="verificacion-punto">Punto 1: Verificar oxidación o suciedad en la superficie</div>
-                <div class="verificacion-info">
-                    <p><strong>Método:</strong> Inspección visual</p>
-                    <p><strong>Corrección:</strong> Limpieza</p>
-                </div>
-                
-                <div class="verificacion-acciones">
-                    <button class="btn">⏱️ Iniciar Verificación</button>
-                </div>
-                
-                <div class="carousel-nav">
-                    <button class="btn" disabled>◀</button>
-                    <button class="btn" disabled>▶</button>
-                </div>
-            </div>
-            
-            <div class="carousel-slide">
-                <div class="verificacion-punto">Punto 2: Verificar abolladuras, grietas y daños en la superficie</div>
-                <div class="verificacion-info">
-                    <p><strong>Método:</strong> Inspección visual</p>
-                    <p><strong>Corrección:</strong> Reemplazo de pieza</p>
-                </div>
-                
-                <div class="verificacion-acciones">
-                    <button class="btn">⏱️ Iniciar Verificación</button>
-                </div>
-                
-                <div class="carousel-nav">
-                    <button class="btn">◀</button>
-                    <button class="btn" disabled>▶</button>
-                </div>
-            </div>
-            
-            <div class="carousel-slide">
-                <div class="verificacion-punto">Punto 3: Verificar juego/soltura de la placa</div>
-                <div class="verificacion-info">
-                    <p><strong>Método:</strong> Verificación de ajuste</p>
-                    <p><strong>Corrección:</strong> Ajuste de tornillos, Reemplazo de tornillos</p>
-                </div>
-                
-                <div class="verificacion-acciones">
-                    <button class="btn">⏱️ Iniciar Verificación</button>
-                </div>
-                
-                <div class="carousel-nav">
-                    <button class="btn">◀</button>
-                    <button class="btn" disabled>▶</button>
+
+    <div class="container" id="app">
+        <!-- Los componentes se generarán dinámicamente aquí -->
+    </div>
+
+    <div class="modal" id="imageModal">
+        <div class="modal-content">
+            <button class="modal-close" onclick="cerrarModal()">×</button>
+            <img id="modalImage" src="" alt="">
+            <h4 id="modalTitle" class="modal-title"></h4>
+            <p id="modalDescription"></p>
+        </div>
+    </div>
+
+    <div class="modal" id="cameraModal">
+        <div class="modal-content">
+            <button class="modal-close" onclick="cerrarCamara()">×</button>
+            <div class="camera-container">
+                <video id="video" autoplay playsinline></video>
+                <canvas id="canvas" style="display: none;"></canvas>
+                <div class="camera-buttons">
+                    <button class="btn btn-primary" onclick="tomarFoto()">📸 Capturar</button>
+                    <button class="btn btn-danger" onclick="cerrarCamara()">❌ Cancelar</button>
                 </div>
             </div>
         </div>
-    </main>
-    
+    </div>
+
     <script>
-        // Este es un ejemplo estático
-        // Para una implementación completa, necesitarías agregar JS para:
-        // 1. Cambiar entre componentes (Baquelita, Placa de Instalación)
-        // 2. Navegar entre slides del carrusel
-        // 3. Manejar el estado de verificación
-        // 4. Gestionar fotos capturadas
+        window.onload = function() {
+            // Inicializar la aplicación
+            renderizarApp();
+            
+            // Solo ajustar el padding-top del contenido a las alturas reales de los encabezados
+            var headerHeight = document.querySelector('.header').offsetHeight;
+            var compHeaderHeight = document.querySelector('.componente-header').offsetHeight;
+            var totalHeight = headerHeight + compHeaderHeight;
+            
+            var content = document.querySelector('.componente-content');
+            if (content) {
+                content.style.paddingTop = totalHeight + 'px';
+            }
+        };
+        // Variables globales para el carrusel principal
+        let carruselPrincipal = {
+            activeComponent: 0,
+            componentesCompletados: []
+        };
+        
+        // Datos iniciales
+        const datosJI = [
+            {
+                id: 1,
+                componente: "Baquelita",
+                descripcion: "Lámina de Aislamiento Térmico",
+                verificaciones: [
+                    {
+                        id: "1-1",
+                        punto: "Verificar oxidación o suciedad en la superficie",
+                        metodo: "Inspección visual",
+                        correccion: "Limpieza",
+                        imagenes: [{
+                            src: "./images/bakelite.jpg",
+                            descripcion: "Vista general de la placa bakelita",
+                            puntosClave: "Revisar toda la superficie buscando suciedad u oxidación"
+                        }],
+                        inicio: null,
+                        fin: null,
+                        estado: null,
+                        notas: ""
+                    },
+                    {
+                        id: "1-2",
+                        punto: "Verificar abolladuras, grietas y daños en la superficie",
+                        metodo: "Inspección visual",
+                        correccion: "Reemplazo de pieza",
+                        imagenes: [{
+                            src: "./images/bakelite-damage.jpg",
+                            descripcion: "Ejemplo de grietas en baquelita",
+                            puntosClave: "Buscar daños físicos en toda la superficie"
+                        }],
+                        inicio: null,
+                        fin: null,
+                        estado: null,
+                        notas: ""
+                    },
+                    {
+                        id: "1-3",
+                        punto: "Verificar juego/soltura de la placa",
+                        metodo: "Verificación de ajuste",
+                        correccion: "Ajuste de tornillos, Reemplazo de tornillos",
+                        imagenes: [{
+                            src: "./images/bakelite-loose.jpg",
+                            descripcion: "Ajuste de tornillos en la placa",
+                            puntosClave: "Comprobar que no haya movimiento"
+                        }],
+                        inicio: null,
+                        fin: null,
+                        estado: null,
+                        notas: ""
+                    }
+                ]
+            },
+            {
+                id: 2,
+                componente: "Placa de Instalación Fija",
+                descripcion: "Placa de Instalación Fija",
+                verificaciones: [
+                    {
+                        id: "2-1",
+                        punto: "Verificar oxidación o suciedad en la superficie",
+                        metodo: "Inspección visual",
+                        correccion: "Pulido, limpieza",
+                        imagenes: [{
+                            src: "./images/fixed-plate.jpg",
+                            descripcion: "Placa de instalación",
+                            puntosClave: "Buscar suciedad y óxido"
+                        }],
+                        inicio: null,
+                        fin: null,
+                        estado: null,
+                        notas: ""
+                    },
+                    {
+                        id: "2-2",
+                        punto: "Verificar abolladuras, daños y grietas en la superficie",
+                        metodo: "Inspección visual",
+                        correccion: "Pulido, Reemplazo de pieza",
+                        imagenes: [{
+                            src: "./images/fixed-plate-damage.jpg",
+                            descripcion: "Ejemplo de daños en placa",
+                            puntosClave: "Inspeccionar toda la superficie y bordes"
+                        }],
+                        inicio: null,
+                        fin: null,
+                        estado: null,
+                        notas: ""
+                    }
+                ]
+            }
+        ];
+
+        // Variables globales
+        let estado = {
+            activeCarouselSlide: 0
+        };
+
+        let stream = null;
+        let capturedImages = {};
+
+        // Funciones de renderizado
+        function renderizarCarruselPrincipal() {
+            const mainProgressDots = document.getElementById('main-progress-dots');
+            const mainControls = document.getElementById('main-carousel-controls');
+            
+            // Renderizar puntos de progreso
+            mainProgressDots.innerHTML = datosJI.map((componente, index) => {
+                const isActive = index === carruselPrincipal.activeComponent;
+                const isCompleted = carruselPrincipal.componentesCompletados.includes(componente.id);
+                return `
+                    <div 
+                        class="main-progress-dot ${isActive ? 'active' : ''} ${isCompleted ? 'completed' : ''}" 
+                        data-title="${componente.componente}"
+                        onclick="cambiarComponente(${index})"
+                    ></div>
+                `;
+            }).join('');
+            
+            // Renderizar controles más compactos
+            const esUltimoComponente = carruselPrincipal.activeComponent === datosJI.length - 1;
+            const componenteActual = datosJI[carruselPrincipal.activeComponent];
+            const componenteCompletado = esComponenteCompletado(componenteActual);
+            
+            mainControls.innerHTML = `
+                <button 
+                    class="btn ${carruselPrincipal.activeComponent > 0 ? 'btn-secondary' : 'btn-disabled'}" 
+                    style="max-width: 150px; padding: 0.3rem 0.7rem; margin: 0.2rem;"
+                    onclick="cambiarComponente(${carruselPrincipal.activeComponent - 1})"
+                    ${carruselPrincipal.activeComponent > 0 ? '' : 'disabled'}
+                >
+                    ⬅️ Anterior
+                </button>
+                
+                <button 
+                    class="btn ${!esUltimoComponente && componenteCompletado ? 'btn-primary' : 'btn-disabled'}" 
+                    style="max-width: 150px; padding: 0.3rem 0.7rem; margin: 0.2rem;"
+                    onclick="cambiarComponente(${carruselPrincipal.activeComponent + 1})"
+                    ${!esUltimoComponente && componenteCompletado ? '' : 'disabled'}
+                >
+                    Siguiente ➡️
+                </button>
+            `;
+        }
+        
+        function renderizarComponentes() {
+            return datosJI.map((componente, index) => {
+                // Verificar si componente está completado y si es el último
+                const componenteCompletado = esComponenteCompletado(componente);
+                const esUltimoComponente = index === datosJI.length - 1;
+                
+                // Indicadores de navegación entre componentes
+                let dotsHtml = '';
+                for (let i = 0; i < datosJI.length; i++) {
+                    const isCompleted = carruselPrincipal.componentesCompletados.includes(datosJI[i].id);
+                    dotsHtml += `<span class="dot ${i === index ? 'active' : ''} ${isCompleted ? 'completed' : ''}"></span>`;
+                }
+                
+                return `
+                    <div class="componente-card ${index === carruselPrincipal.activeComponent ? 'active' : ''}" data-id="${componente.id}">
+                        <div class="componente-header">
+                            <div class="componente-header-content">
+                                <div>
+                                    <h2>${componente.componente}</h2>
+                                    <p>${componente.descripcion}</p>
+                                </div>
+                            </div>
+                            <div class="componente-nav">
+                                <div class="nav-indicator">
+                                    ${dotsHtml}
+                                </div>
+                                <button 
+                                    class="nav-button" 
+                                    onclick="cambiarComponente(${index - 1})"
+                                    ${index > 0 ? '' : 'disabled'}
+                                    title="Componente anterior"
+                                >
+                                    ◀
+                                </button>
+                                <button 
+                                    class="nav-button" 
+                                    onclick="cambiarComponente(${index + 1})"
+                                    ${!esUltimoComponente && componenteCompletado ? '' : 'disabled'}
+                                    title="Siguiente componente"
+                                >
+                                    ▶
+                                </button>
+                            </div>
+                        </div>
+                        <div class="componente-content">
+                            ${renderizarCarrusel(componente)}
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function renderizarCarrusel(componente) {
+            
+            // Verificar si todas las verificaciones están completas
+            const todasCompletas = componente.verificaciones.every(v => v.fin !== null);
+            
+            let html = `
+                <div class="carousel-container">
+                    <div class="progress-indicator">
+                        ${componente.verificaciones.map((ver, index) => `
+                            <div 
+                                class="progress-dot ${index === estado.activeCarouselSlide ? 'active' : ''} ${ver.fin ? 'completed' : ''}" 
+                                onclick="cambiarSlide(${index}, ${componente.id})"
+                                title="${ver.punto}"
+                            ></div>
+                        `).join('')}
+                    </div>`;
+            
+            // Slides del carrusel
+            componente.verificaciones.forEach((ver, index) => {
+                html += `
+                    <div class="carousel-slide ${index === estado.activeCarouselSlide ? 'active' : ''}">
+                        <h3>Punto ${index + 1}: ${ver.punto}</h3>
+                        <div class="texto-info">
+                            <p><strong>Método:</strong> ${ver.metodo}</p>
+                            <p><strong>Corrección:</strong> ${ver.correccion}</p>
+                        </div>
+                        
+                        <div class="imagen-container">
+                            ${ver.imagenes.map(img => `
+                                <img 
+                                    src="${img.src}" 
+                                    alt="${img.descripcion}"
+                                    onclick="mostrarImagen('${img.src}', '${img.descripcion}', '${img.puntosClave}')"
+                                >
+                                <p><strong>${img.descripcion}</strong></p>
+                                <p>${img.puntosClave}</p>
+                            `).join('')}
+                        </div>
+                        
+                        ${renderizarAcciones(componente.id, ver, index, componente.verificaciones.length)}
+                    </div>
+                `;
+            });
+            
+            // Añadir resumen si todas las verificaciones están completas
+            if (todasCompletas) {
+                html += renderizarResumen(componente);
+            }
+            
+            html += `</div>`;
+            return html;
+        }
+
+        function renderizarResumen(componente) {
+            return `
+                <div class="resumen-verificaciones">
+                    <h3>Resumen de Verificaciones</h3>
+                    ${componente.verificaciones.map((ver, index) => `
+                        <div class="verificacion-item">
+                            <div>
+                                <strong>Punto ${index + 1}:</strong> ${ver.punto}
+                            </div>
+                            <div class="verificacion-estado">
+                                ${ver.estado ? 
+                                    '<span style="color: #2d8a2d;">✅ Completado</span>' : 
+                                    '<span style="color: #d32f2f;">❌ No Completado</span>'}
+                            </div>
+                        </div>
+                    `).join('')}
+                    <div style="text-align: center; margin-top: 1.5rem;">
+                        <p><strong>Estado general:</strong> 
+                            ${componente.verificaciones.every(v => v.estado) ? 
+                                '<span style="color: #2d8a2d;">✅ Componente OK</span>' : 
+                                '<span style="color: #d32f2f;">❌ Componente requiere atención</span>'}
+                        </p>
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderizarAcciones(componenteId, verificacion, slideIndex, totalSlides) {
+            let html = '<div class="actions-container">';
+            
+            if (!verificacion.inicio) {
+                html += `
+                    <button class="btn btn-primary" style="margin-top: 0.5rem;" onclick="iniciarVerificacion(${componenteId}, '${verificacion.id}')">
+                        ⏱️ Iniciar
+                    </button>`;
+            } else if (!verificacion.fin) {
+                html += `
+                    <button class="btn btn-primary" style="margin-top: 0.5rem;" onclick="iniciarCamara(${componenteId}, '${verificacion.id}')">
+                        📸 Foto
+                    </button>
+                    <button class="btn btn-success" onclick="completarVerificacion(${componenteId}, '${verificacion.id}', true)">
+                        ✅ Completar
+                    </button>
+                    <button class="btn btn-danger" onclick="noCompletarVerificacion(${componenteId}, '${verificacion.id}')">
+                        ❌ Problema
+                    </button>`;
+            }
+            
+            html += '</div>';
+
+            // Add captured images section if any exist
+            if (capturedImages[verificacion.id] && capturedImages[verificacion.id].length > 0) {
+                html += `
+                    <div id="capturadas">
+                        <h4>📸 Fotos Capturadas</h4>
+                        ${capturedImages[verificacion.id].map((img, index) => `
+                            <div class="foto-item">
+                                <div class="imagen-header">
+                                    <span>Foto ${index + 1}</span>
+                                    <button class="btn btn-danger" style="max-width: 100px; padding: 0.2rem 0.5rem; margin: 0;" onclick="eliminarFoto('${verificacion.id}', ${index})">
+                                        🗑️
+                                    </button>
+                                </div>
+                                <img src="${img.imageData}" class="captured-image" alt="Foto capturada ${index + 1}">
+                                <p>Tomada: ${new Date(img.timestamp).toLocaleString()}</p>
+                            </div>
+                        `).join('')}
+                    </div>`;
+            }
+
+            if (verificacion.fin) {
+                html += `
+                    <div class="verificacion-resultado">
+                        <h4>Resultado</h4>
+                        <p>⏱️ ${formatearTiempo(calcularDuracion(verificacion.inicio, verificacion.fin))}</p>
+                        <p>${verificacion.estado ? '✅ Completado' : '❌ No Completado'}</p>
+                        ${verificacion.notas ? `<p>📝 ${verificacion.notas}</p>` : ''}
+                    </div>`;
+            }
+
+            // Agregar navegación del carrusel en versión minimalista
+            html += `
+                <div class="carousel-nav" style="margin-top: 0.5rem;">
+                    <button 
+                        class="btn ${slideIndex > 0 ? 'btn-secondary' : 'btn-disabled'}" 
+                        style="max-width: 40px; height: 40px; padding: 0; margin: 0 0.3rem; border-radius: 50%;"
+                        onclick="cambiarSlide(${slideIndex - 1}, ${componenteId})"
+                        ${slideIndex > 0 ? '' : 'disabled'}
+                    >
+                        ◀
+                    </button>
+                    
+                    <button 
+                        class="btn ${slideIndex < totalSlides - 1 && verificacion.fin ? 'btn-primary' : 'btn-disabled'}" 
+                        style="max-width: 40px; height: 40px; padding: 0; margin: 0 0.3rem; border-radius: 50%;"
+                        onclick="cambiarSlide(${slideIndex + 1}, ${componenteId})"
+                        ${slideIndex < totalSlides - 1 && verificacion.fin ? '' : 'disabled'}
+                    >
+                        ▶
+                    </button>
+                </div>`;
+
+            return html;
+        }
+
+        // Funciones auxiliares
+        function formatearTiempo(segundos) {
+            if (segundos < 60) return `${segundos} segundos`;
+            return `${Math.floor(segundos / 60)} minutos ${segundos % 60} segundos`;
+        }
+
+        function calcularDuracion(inicio, fin) {
+            if (!inicio || !fin) return null;
+            return Math.round((new Date(fin) - new Date(inicio)) / 1000);
+        }
+
+        // Funciones de eventos
+        function cambiarComponente(index) {
+            // Solo permitir cambiar a componentes anteriores o al siguiente si el actual está completado
+            const componenteActual = datosJI[carruselPrincipal.activeComponent];
+            const esComponenteActualCompletado = esComponenteCompletado(componenteActual);
+            
+            if (index < carruselPrincipal.activeComponent || (index === carruselPrincipal.activeComponent + 1 && esComponenteActualCompletado)) {
+                carruselPrincipal.activeComponent = index;
+                estado.activeCarouselSlide = 0;
+                renderizarApp();
+            } else if (index === carruselPrincipal.activeComponent + 1 && !esComponenteActualCompletado) {
+                alert('Debes completar todas las verificaciones del componente actual antes de avanzar.');
+            }
+        }
+        
+        function esComponenteCompletado(componente) {
+            return componente.verificaciones.every(v => v.fin !== null);
+        }
+
+        function cambiarSlide(slideIndex, componenteId) {
+            const componente = datosJI.find(c => c.id === componenteId);
+            
+            // Verificar si el slide anterior está completado o si estamos retrocediendo
+            const slideActual = estado.activeCarouselSlide;
+            
+            if (slideIndex < slideActual || componente.verificaciones[slideActual].fin) {
+                estado.activeCarouselSlide = slideIndex;
+                renderizarApp();
+            }
+        }
+
+        function iniciarVerificacion(componenteId, verificacionId) {
+            const componente = datosJI.find(c => c.id === componenteId);
+            const verificacion = componente.verificaciones.find(v => v.id === verificacionId);
+            verificacion.inicio = new Date().toISOString();
+            renderizarApp();
+        }
+
+        function completarVerificacion(componenteId, verificacionId, estadoVerificacion) {
+            const componente = datosJI.find(c => c.id === componenteId);
+            const verificacion = componente.verificaciones.find(v => v.id === verificacionId);
+            verificacion.fin = new Date().toISOString();
+            verificacion.estado = estadoVerificacion;
+            
+            // Avanzar automáticamente al siguiente slide si no es el último
+            const slideIndex = componente.verificaciones.findIndex(v => v.id === verificacionId);
+            if (slideIndex < componente.verificaciones.length - 1) {
+                setTimeout(() => {
+                    cambiarSlide(slideIndex + 1, componenteId);
+                }, 1000);
+            } else {
+                // Si es el último punto y todas las verificaciones están completas
+                if (esComponenteCompletado(componente)) {
+                    // Actualizar lista de componentes completados
+                    if (!carruselPrincipal.componentesCompletados.includes(componente.id)) {
+                        carruselPrincipal.componentesCompletados.push(componente.id);
+                    }
+                    
+                    // Mostrar mensaje de componente completado
+                    setTimeout(() => {
+                        alert(`¡Componente "${componente.componente}" verificado completamente!`);
+                    }, 500);
+                }
+            }
+            
+            renderizarApp();
+        }
+
+        function noCompletarVerificacion(componenteId, verificacionId) {
+            const notas = prompt("Indica el motivo por el que no se pudo completar:");
+            if (notas) {
+                const componente = datosJI.find(c => c.id === componenteId);
+                const verificacion = componente.verificaciones.find(v => v.id === verificacionId);
+                verificacion.fin = new Date().toISOString();
+                verificacion.estado = false;
+                verificacion.notas = notas;
+                
+                // Avanzar automáticamente al siguiente slide si no es el último
+                const slideIndex = componente.verificaciones.findIndex(v => v.id === verificacionId);
+                if (slideIndex < componente.verificaciones.length - 1) {
+                    setTimeout(() => {
+                        cambiarSlide(slideIndex + 1, componenteId);
+                    }, 1000);
+                } else {
+                    // Si es el último punto y todas las verificaciones están completas
+                    if (esComponenteCompletado(componente)) {
+                        // Actualizar lista de componentes completados
+                        if (!carruselPrincipal.componentesCompletados.includes(componente.id)) {
+                            carruselPrincipal.componentesCompletados.push(componente.id);
+                        }
+                        
+                        // Mostrar mensaje de componente completado con problemas
+                        setTimeout(() => {
+                            alert(`Componente "${componente.componente}" verificado con problemas. Revisar el resumen para más detalles.`);
+                        }, 500);
+                    }
+                }
+                
+                renderizarApp();
+            }
+        }
+
+        function iniciarCamara(componenteId, verificacionId) {
+            const modal = document.getElementById('cameraModal');
+            const video = document.getElementById('video');
+            
+            navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } })
+                .then(videoStream => {
+                    stream = videoStream;
+                    video.srcObject = stream;
+                    modal.classList.add('active');
+                    window.currentComponenteId = componenteId;
+                    window.currentVerificacionId = verificacionId;
+                })
+                .catch(error => {
+                    console.error('Error accessing camera:', error);
+                    alert('Error al acceder a la cámara. Verifica los permisos.');
+                });
+        }
+
+        function cerrarCamara() {
+            const modal = document.getElementById('cameraModal');
+            const video = document.getElementById('video');
+            
+            if (stream) {
+                stream.getTracks().forEach(track => track.stop());
+                stream = null;
+            }
+            
+            video.srcObject = null;
+            modal.classList.remove('active');
+        }
+
+        function tomarFoto() {
+            const video = document.getElementById('video');
+            const canvas = document.getElementById('canvas');
+            const context = canvas.getContext('2d');
+
+            canvas.width = video.videoWidth;
+            canvas.height = video.videoHeight;
+            context.drawImage(video, 0, 0);
+
+            const imageData = canvas.toDataURL('image/jpeg');
+            const componenteId = window.currentComponenteId;
+            const verificacionId = window.currentVerificacionId;
+
+            if (!capturedImages[verificacionId]) {
+                capturedImages[verificacionId] = [];
+            }
+
+            capturedImages[verificacionId].push({
+                timestamp: new Date().toISOString(),
+                imageData: imageData
+            });
+
+            cerrarCamara();
+            renderizarApp();
+        }
+
+        function eliminarFoto(verificacionId, index) {
+            if (confirm('¿Estás seguro de que deseas eliminar esta foto?')) {
+                capturedImages[verificacionId].splice(index, 1);
+                renderizarApp();
+            }
+        }
+
+        function mostrarImagen(src, titulo, descripcion) {
+            const modal = document.getElementById('imageModal');
+            const imagen = document.getElementById('modalImage');
+            const tituloEl = document.getElementById('modalTitle');
+            const descEl = document.getElementById('modalDescription');
+
+            imagen.src = src;
+            tituloEl.textContent = titulo;
+            descEl.textContent = descripcion;
+            modal.classList.add('active');
+        }
+
+        function cerrarModal() {
+            document.getElementById('imageModal').classList.remove('active');
+        }
+
+        // Event Listeners
+        document.getElementById('imageModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                this.classList.remove('active');
+            }
+        });
+
+        function renderizarApp() {
+            // Actualizar componentes completados
+            carruselPrincipal.componentesCompletados = datosJI
+                .filter(c => esComponenteCompletado(c))
+                .map(c => c.id);
+                
+            // Renderizar componentes
+            const app = document.getElementById('app');
+            app.innerHTML = renderizarComponentes();
+            
+            // Verificar el estado actual después del renderizado
+            console.log("Estado actual:", estado);
+            console.log("Carrusel principal:", carruselPrincipal);
+            console.log("DOM actualizado:", app.innerHTML.length > 0 ? "Contenido generado" : "Sin contenido");
+        }
+
+        renderizarApp();
     </script>
 </body>
 </html>
