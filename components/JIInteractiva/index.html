@@ -37,8 +37,12 @@
         /* Header */
         .header {
             background: var(--color-primary);
-            padding: 3rem 0;
+            padding: 2rem 0;
             text-align: center;
+            position: sticky;
+            top: 0;
+            z-index: 50;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
         }
 
         .header h1 {
@@ -53,6 +57,73 @@
             font-size: 1.2rem;
         }
 
+        /* Navegación principal */
+        .main-container {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .main-carousel-nav {
+            background: var(--color-dark);
+            color: var(--color-white);
+            padding: 1rem 0;
+            position: sticky;
+            top: 88px; /* Ajustar según la altura del header */
+            z-index: 40;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        
+        .main-progress-indicators {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 1rem;
+        }
+        
+        #main-progress-dots {
+            display: flex;
+            gap: 1rem;
+        }
+        
+        .main-progress-dot {
+            width: 15px;
+            height: 15px;
+            border-radius: 50%;
+            background-color: #666;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+        
+        .main-progress-dot.active {
+            background-color: var(--color-primary);
+            transform: scale(1.2);
+        }
+        
+        .main-progress-dot.completed {
+            background-color: #2d8a2d;
+        }
+        
+        .main-progress-dot:hover::after {
+            content: attr(data-title);
+            position: absolute;
+            top: -30px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0,0,0,0.8);
+            color: white;
+            padding: 5px 10px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            white-space: nowrap;
+            z-index: 10;
+        }
+        
+        #main-carousel-controls {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+        }
+        
         /* Componentes y verificaciones */
         .componente-card {
             background: var(--color-white);
@@ -60,21 +131,21 @@
             margin: 1rem 0;
             box-shadow: 0 1px 3px rgba(0,0,0,0.1);
             overflow: hidden;
+            display: none;
         }
-
+        
+        .componente-card.active {
+            display: block;
+        }
+        
         .componente-header {
             background: var(--color-dark);
             padding: 1.2rem;
-            cursor: pointer;
             display: flex;
             align-items: center;
             color: var(--color-white);
         }
-
-        .componente-header:hover {
-            background: #404040;
-        }
-
+        
         .componente-header h2 {
             margin: 0;
             font-size: 1.2rem;
@@ -408,8 +479,20 @@
         </div>
     </div>
 
-    <div class="container" id="app">
-        <!-- Los componentes se generarán dinámicamente aquí -->
+    <div class="main-container">
+        <!-- Control de navegación entre componentes -->
+        <div class="main-carousel-nav">
+            <div class="container">
+                <div class="main-progress-indicators">
+                    <div id="main-progress-dots"></div>
+                </div>
+                <div id="main-carousel-controls"></div>
+            </div>
+        </div>
+        
+        <div class="container" id="app">
+            <!-- Los componentes se generarán dinámicamente aquí -->
+        </div>
     </div>
 
     <div class="modal" id="imageModal">
@@ -436,6 +519,12 @@
     </div>
 
     <script>
+        // Variables globales para el carrusel principal
+        let carruselPrincipal = {
+            activeComponent: 0,
+            componentesCompletados: []
+        };
+        
         // Datos iniciales
         const datosJI = [
             {
@@ -531,8 +620,6 @@
 
         // Variables globales
         let estado = {
-            expandedStep: null,
-            activeComponent: null,
             activeCarouselSlide: 0
         };
 
@@ -540,25 +627,66 @@
         let capturedImages = {};
 
         // Funciones de renderizado
-        function renderizarComponente(componente) {
-            return `
-                <div class="componente-card" data-id="${componente.id}">
-                    <div class="componente-header" onclick="toggleComponente(${componente.id})">
-                        <span class="icon">${estado.expandedStep === componente.id ? '🔽' : '▶️'}</span>
-                        <div>
-                            <h2>${componente.componente}</h2>
-                            <p>${componente.descripcion}</p>
+        function renderizarCarruselPrincipal() {
+            const mainProgressDots = document.getElementById('main-progress-dots');
+            const mainControls = document.getElementById('main-carousel-controls');
+            
+            // Renderizar puntos de progreso
+            mainProgressDots.innerHTML = datosJI.map((componente, index) => {
+                const isActive = index === carruselPrincipal.activeComponent;
+                const isCompleted = carruselPrincipal.componentesCompletados.includes(componente.id);
+                return `
+                    <div 
+                        class="main-progress-dot ${isActive ? 'active' : ''} ${isCompleted ? 'completed' : ''}" 
+                        data-title="${componente.componente}"
+                        onclick="cambiarComponente(${index})"
+                    ></div>
+                `;
+            }).join('');
+            
+            // Renderizar controles
+            const esUltimoComponente = carruselPrincipal.activeComponent === datosJI.length - 1;
+            const componenteActual = datosJI[carruselPrincipal.activeComponent];
+            const componenteCompletado = esComponenteCompletado(componenteActual);
+            
+            mainControls.innerHTML = `
+                <button 
+                    class="btn ${carruselPrincipal.activeComponent > 0 ? 'btn-secondary' : 'btn-disabled'}" 
+                    onclick="cambiarComponente(${carruselPrincipal.activeComponent - 1})"
+                    ${carruselPrincipal.activeComponent > 0 ? '' : 'disabled'}
+                >
+                    ⬅️ Componente Anterior
+                </button>
+                
+                <button 
+                    class="btn ${!esUltimoComponente && componenteCompletado ? 'btn-primary' : 'btn-disabled'}" 
+                    onclick="cambiarComponente(${carruselPrincipal.activeComponent + 1})"
+                    ${!esUltimoComponente && componenteCompletado ? '' : 'disabled'}
+                >
+                    Siguiente Componente ➡️
+                </button>
+            `;
+        }
+        
+        function renderizarComponentes() {
+            return datosJI.map((componente, index) => {
+                return `
+                    <div class="componente-card ${index === carruselPrincipal.activeComponent ? 'active' : ''}" data-id="${componente.id}">
+                        <div class="componente-header">
+                            <div>
+                                <h2>${componente.componente}</h2>
+                                <p>${componente.descripcion}</p>
+                            </div>
+                        </div>
+                        <div class="componente-content active">
+                            ${renderizarCarrusel(componente)}
                         </div>
                     </div>
-                    <div class="componente-content ${estado.expandedStep === componente.id ? 'active' : ''}">
-                        ${componente.id === estado.expandedStep ? renderizarCarrusel(componente) : ''}
-                    </div>
-                </div>
-            `;
+                `;
+            }).join('');
         }
 
         function renderizarCarrusel(componente) {
-            estado.activeComponent = componente.id;
             
             // Verificar si todas las verificaciones están completas
             const todasCompletas = componente.verificaciones.every(v => v.fin !== null);
@@ -726,10 +854,22 @@
         }
 
         // Funciones de eventos
-        function toggleComponente(id) {
-            estado.expandedStep = estado.expandedStep === id ? null : id;
-            estado.activeCarouselSlide = 0;
-            renderizarApp();
+        function cambiarComponente(index) {
+            // Solo permitir cambiar a componentes anteriores o al siguiente si el actual está completado
+            const componenteActual = datosJI[carruselPrincipal.activeComponent];
+            const esComponenteActualCompletado = esComponenteCompletado(componenteActual);
+            
+            if (index < carruselPrincipal.activeComponent || (index === carruselPrincipal.activeComponent + 1 && esComponenteActualCompletado)) {
+                carruselPrincipal.activeComponent = index;
+                estado.activeCarouselSlide = 0;
+                renderizarApp();
+            } else if (index === carruselPrincipal.activeComponent + 1 && !esComponenteActualCompletado) {
+                alert('Debes completar todas las verificaciones del componente actual antes de avanzar.');
+            }
+        }
+        
+        function esComponenteCompletado(componente) {
+            return componente.verificaciones.every(v => v.fin !== null);
         }
 
         function cambiarSlide(slideIndex, componenteId) {
@@ -751,11 +891,11 @@
             renderizarApp();
         }
 
-        function completarVerificacion(componenteId, verificacionId, estado) {
+        function completarVerificacion(componenteId, verificacionId, estadoVerificacion) {
             const componente = datosJI.find(c => c.id === componenteId);
             const verificacion = componente.verificaciones.find(v => v.id === verificacionId);
             verificacion.fin = new Date().toISOString();
-            verificacion.estado = estado;
+            verificacion.estado = estadoVerificacion;
             
             // Avanzar automáticamente al siguiente slide si no es el último
             const slideIndex = componente.verificaciones.findIndex(v => v.id === verificacionId);
@@ -763,6 +903,19 @@
                 setTimeout(() => {
                     cambiarSlide(slideIndex + 1, componenteId);
                 }, 1000);
+            } else {
+                // Si es el último punto y todas las verificaciones están completas
+                if (esComponenteCompletado(componente)) {
+                    // Actualizar lista de componentes completados
+                    if (!carruselPrincipal.componentesCompletados.includes(componente.id)) {
+                        carruselPrincipal.componentesCompletados.push(componente.id);
+                    }
+                    
+                    // Mostrar mensaje de componente completado
+                    setTimeout(() => {
+                        alert(`¡Componente "${componente.componente}" verificado completamente!`);
+                    }, 500);
+                }
             }
             
             renderizarApp();
@@ -783,6 +936,19 @@
                     setTimeout(() => {
                         cambiarSlide(slideIndex + 1, componenteId);
                     }, 1000);
+                } else {
+                    // Si es el último punto y todas las verificaciones están completas
+                    if (esComponenteCompletado(componente)) {
+                        // Actualizar lista de componentes completados
+                        if (!carruselPrincipal.componentesCompletados.includes(componente.id)) {
+                            carruselPrincipal.componentesCompletados.push(componente.id);
+                        }
+                        
+                        // Mostrar mensaje de componente completado con problemas
+                        setTimeout(() => {
+                            alert(`Componente "${componente.componente}" verificado con problemas. Revisar el resumen para más detalles.`);
+                        }, 500);
+                    }
                 }
                 
                 renderizarApp();
@@ -878,8 +1044,17 @@
 
         // Iniciar la aplicación
         function renderizarApp() {
+            // Actualizar componentes completados
+            carruselPrincipal.componentesCompletados = datosJI
+                .filter(c => esComponenteCompletado(c))
+                .map(c => c.id);
+                
+            // Renderizar carrusel principal
+            renderizarCarruselPrincipal();
+            
+            // Renderizar componentes
             const app = document.getElementById('app');
-            app.innerHTML = datosJI.map(renderizarComponente).join('');
+            app.innerHTML = renderizarComponentes();
         }
 
         renderizarApp();
