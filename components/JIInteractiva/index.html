@@ -780,17 +780,10 @@
     </style>
 </head>
 <body>
-    <div class="header">
+    <div class="header" style="font-size:0;line-height:0;">
         <div class="container">
-            <h1 style="color:white; font-size:1.2rem; margin:0 0.5rem 0 0; padding:0; line-height:1.2;">Verificación de Molde</h1>
-            <p style="color:white; font-size:0.75rem; margin:0; padding:0 0 0 0.5rem; border-left:1px solid rgba(255,255,255,0.5); line-height:1.2;">Inspección y mantenimiento</p>
-        </div>
-    </div>
-    
-    <!-- El contenido principal se envuelve en un div con padding superior -->
-    <div class="main-wrapper">
-        <div class="container" id="app">
-            <!-- Los componentes se generarán dinámicamente aquí -->
+            <h1>Verificación de Molde</h1>
+            <p>Inspección y mantenimiento</p>
         </div>
     </div>
 
@@ -826,8 +819,37 @@
             // Inicializar la aplicación
             renderizarApp();
             
-            // No se necesita ajustar padding porque se usa una estructura más limpia con main-wrapper
-            console.log("Aplicación inicializada");
+            // Forzar alineación perfecta entre encabezados
+            var header = document.querySelector('.header');
+            var compHeader = document.querySelector('.componente-header');
+            
+            // Ajustar la posición del componente-header exactamente debajo del header
+            if (header && compHeader) {
+                var headerHeight = header.offsetHeight;
+                compHeader.style.top = headerHeight + 'px';
+                
+                // Ajustar el padding-top del contenido
+                var totalHeight = headerHeight + compHeader.offsetHeight;
+                var content = document.querySelector('.componente-content');
+                if (content) {
+                    content.style.paddingTop = totalHeight + 'px';
+                }
+            }
+            
+            // Asegurar que el contenido del carrusel sea visible
+            setTimeout(function() {
+                // Forzar visualización de carrusel y slides
+                document.querySelectorAll('.carousel-container, .carousel-slide.active, .componente-content, .texto-info, .imagen-container, .actions-container').forEach(function(el) {
+                    if (el) {
+                        el.style.display = 'block';
+                        el.style.visibility = 'visible';
+                    }
+                });
+                
+                // Log para verificar slides
+                console.log("Slides disponibles:", document.querySelectorAll('.carousel-slide').length);
+                console.log("Slide activo:", document.querySelectorAll('.carousel-slide.active').length);
+            }, 100);
         };
         // Variables globales para el carrusel principal
         let carruselPrincipal = {
