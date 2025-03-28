@@ -786,6 +786,13 @@
             <p style="color:white; font-size:0.75rem; margin:0; padding:0 0 0 0.5rem; border-left:1px solid rgba(255,255,255,0.5); line-height:1.2;">Inspección y mantenimiento</p>
         </div>
     </div>
+    
+    <!-- El contenido principal se envuelve en un div con padding superior -->
+    <div class="main-wrapper">
+        <div class="container" id="app">
+            <!-- Los componentes se generarán dinámicamente aquí -->
+        </div>
+    </div>
 
     <div class="container" id="app">
         <!-- Los componentes se generarán dinámicamente aquí -->
@@ -819,15 +826,8 @@
             // Inicializar la aplicación
             renderizarApp();
             
-            // Solo ajustar el padding-top del contenido a las alturas reales de los encabezados
-            var headerHeight = document.querySelector('.header').offsetHeight;
-            var compHeaderHeight = document.querySelector('.componente-header').offsetHeight;
-            var totalHeight = headerHeight + compHeaderHeight;
-            
-            var content = document.querySelector('.componente-content');
-            if (content) {
-                content.style.paddingTop = totalHeight + 'px';
-            }
+            // No se necesita ajustar padding porque se usa una estructura más limpia con main-wrapper
+            console.log("Aplicación inicializada");
         };
         // Variables globales para el carrusel principal
         let carruselPrincipal = {
