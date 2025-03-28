@@ -31,7 +31,7 @@
         .container {
             max-width: 1200px;
             margin: 0 auto;
-            padding: 0.5rem;
+            padding: 0;
         }
         
         /* Estilos para los puntos indicadores del componente */
@@ -65,6 +65,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
+            height: 39px; /* Altura fija para alinear perfectamente con la barra de componente */
         }
 
         .header .container {
@@ -93,9 +94,9 @@
         /* Integramos la navegación principal en el componente */
         .componente-card {
             background: var(--color-white);
-            border-radius: 8px;
-            margin: 0.5rem 0;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            border-radius: 0;
+            margin: 0;
+            box-shadow: none;
             overflow: hidden;
             display: none;
         }
@@ -106,14 +107,16 @@
         
         .componente-header {
             background: var(--color-dark);
-            padding: 0.75rem 0.5rem;
+            padding: 0.5rem 0.5rem;
             display: flex;
             align-items: center;
             justify-content: space-between;
             color: var(--color-white);
             position: sticky;
-            top: 40px; /* Altura del header */
+            top: 39px; /* Exactamente debajo del header rojo */
             z-index: 30;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            border-top: 1px solid rgba(255,255,255,0.1);
         }
         
         .componente-header-content {
@@ -205,11 +208,9 @@
         /* Carrusel */
         .carousel-container {
             position: relative;
-            margin: 0.5rem 0;
+            margin: 0;
             padding: 0.5rem;
             background: var(--color-white);
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
         }
 
         .carousel-slide {
